@@ -21,7 +21,7 @@ def fin(parametro):
 def verificar_dni(dni: str):
     dni = int(dni)
     dnis = pd.read_excel(config['planilla'])
-    return dni in dnis['DNI']
+    return dni in dnis['DNI'].values
 
 @app.post('/respuesta')
 async def respuesta(state: ActualState):
