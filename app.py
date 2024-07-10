@@ -1,4 +1,4 @@
-from fastapi import fastAPI
+from fastapi import FastAPI
 from pydantic import BaseModel
 import uvicorn
 import yaml
