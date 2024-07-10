@@ -18,7 +18,8 @@ mensajes:
     texto: Al momento en CDN no tenemos asignada tu deuda, por favor contactate con BBVA al 0800-999-2282 De LUNeS A VieRNeS de 10 a 15 hs
     siguientes:
       funcion: fin
-      fin: 18
+      resultados:
+        fin: 18
 
   18:
     texto: Conversación terminada
