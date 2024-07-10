@@ -2,3 +2,4 @@ pyyaml
 pandas
 uvicorn
 fastapi
+openpyxl
