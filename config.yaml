@@ -8,14 +8,14 @@ mensajes:
         False: 1
         True: 3
   1:
-    texto: Hoy no tenemos asignada deuda con tu número de DNI. Indicanos por favor el número de DNI del TITULAR De LA CUeNTA
+    texto: Hoy no tenemos asignada deuda con tu número de DNI. Indicanos por favor el número de DNI DEL TITULAR DE LA CUENTA
     siguientes:
       funcion: verificar_dni
       resultados:
         False: 2
         True: 3
   2:
-    texto: Al momento en CDN no tenemos asignada tu deuda, por favor contactate con BBVA al 0800-999-2282 De LUNeS A VieRNeS de 10 a 15 hs
+    texto: Al momento en CDN no tenemos asignada tu deuda, por favor contactate con BBVA al 0800-999-2282 DE LUNES A VIERNES DE 10 A 15 HS
     siguientes:
       funcion: fin
       resultados:
