@@ -13,6 +13,8 @@ with open('config.yaml', 'r') as f:
 
 mensajes = config['mensajes']
 dnis = pd.read_excel(config['planilla'])
+feriados = ['2024-07-09', '2024-10-11']
+calendario_con_feriados = pd.offsets.CustomBusinessDay(holidays=feriados)
 
 class ActualState(BaseModel):
     nodo: int
@@ -41,6 +43,14 @@ def dame_nombre(dni: str):
 def dame_deuda(dni: str):
     dni = int(dni)
     return dnis[dnis['DNI'] == dni]['DEUDA_TOTAL'].values[0]
+
+def dame_oferta_fecha(dni: str):
+    dni = str(dni)
+    fila = dnis[dnis['DNI'] == dni]
+    oferta = fila['OFERTA CANCELATORIA'].values[0]
+    cantidad_dias = 5
+    fecha_limite = pd.Timestamp(datetime.today()) + calendario_con_feriados * 5
+    return (oferta, fecha_limite)
 
 @app.post('/respuesta')
 async def respuesta(state: ActualState):

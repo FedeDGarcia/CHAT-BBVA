@@ -49,9 +49,28 @@ mensajes:
         5: 9
   5:
     texto: "Perfecto, te pedimos que nos indiques la fecha de pago ej: 01/03/2024. Y nos envíes el archivo adjunto del comprobante para poder registrarlo"
-    funcion: verificar_mes_actual
     siguientes:
+      funcion: verificar_mes_actual
       True: 10
       False: 5
+  6:
+    texto: >
+      "
+      Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria, cancelas por {0}. ¿Ves factible abonar esto al {1}?
+      1) SI
+      2) NO
+      "
+    funcion: dame_oferta_fecha
+    siguientes:
+      funcion: "lambda x: x"
+      resultados:
+        1: 11
+        2: 12
+  7:
+    texto: Para solicitar el libre deuda podes acercarte a la sucursal más cercana o comunicarse al 0800-999-2282 de lunes a viernes de 10 a 15 hs. Muchas gracias
+    siguientes:
+      funcion: fin
+      resultados:
+        fin: 18
   18:
     texto: Conversación terminada
