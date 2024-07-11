@@ -117,5 +117,12 @@ mensajes:
       resultados:
         1: 11
         2: 15
+  14:
+    texto: Indicanos en que fecha ves factible abonar tu deuda con BBVA en el siguiente formato ej 02/03/2024
+    siguientes:
+      funcion: validar_fecha
+      resultados:
+        True: 15
+        False: 16
   18:
     texto: Conversación terminada

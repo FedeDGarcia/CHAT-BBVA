@@ -4,7 +4,7 @@ import uvicorn
 import yaml
 import pandas as pd
 import re
-from datetime import datetime
+import datetime
 
 app = FastAPI()
 
@@ -35,6 +35,10 @@ def verificar_mes_actual(fecha: str):
     fecha = datetime.datetime(fecha, '%d/%m/%Y')
     mes_actual = datetime.today().strftime('%m/%Y')
     return fecha.strftime('%m/%Y') == mes_actual
+
+def verificar_fecha(fecha: str):
+    fecha = datetime.datetime(fecha, '%d/%m/%Y')
+    return fecha > datetime.today()
 
 def dame_nombre(dni: str):
     dni = int(dni)
