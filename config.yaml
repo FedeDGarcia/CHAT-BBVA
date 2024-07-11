@@ -47,5 +47,11 @@ mensajes:
         3: 7
         4: 8
         5: 9
+  5:
+    texto: "Perfecto, te pedimos que nos indiques la fecha de pago ej: 01/03/2024. Y nos envíes el archivo adjunto del comprobante para poder registrarlo"
+    funcion: verificar_mes_actual
+    siguientes:
+      True: 10
+      False: 5
   18:
     texto: Conversación terminada

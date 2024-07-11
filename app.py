@@ -4,6 +4,7 @@ import uvicorn
 import yaml
 import pandas as pd
 import re
+from datetime import datetime
 
 app = FastAPI()
 
@@ -27,6 +28,11 @@ def verificar_dni(dni: str):
 def verificar_correo(correo: str):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     return re.fullmatch(regex, correo) is not None
+
+def verificar_mes_actual(fecha: str):
+    fecha = datetime.datetime(fecha, '%d/%m/%Y')
+    mes_actual = datetime.today().strftime('%m/%Y')
+    return fecha.strftime('%m/%Y') == mes_actual
 
 def dame_nombre(dni: str):
     dni = int(dni)
