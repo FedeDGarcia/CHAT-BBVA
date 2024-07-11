@@ -53,6 +53,11 @@ def dame_fecha_limite():
     fecha_limite = pd.Timestamp(datetime.today()) + calendario_con_feriados * cantidad_dias
     return fecha_limite
 
+def dame_planes(dni: str):
+    dni = int(dni)
+    fila = dnis[dnis['DNI'] == dni]
+    return fila[['CANT CUOTAS 1', 'MONTON CUOTA 1', 'CANT CUOTAS 2', 'MONTON CUOTA 2', 'CANT CUOTAS 3', 'MONTON CUOTAS 3']]
+
 def dame_oferta_fecha(dni: str):
     dni = str(dni)
     fila = dnis[dnis['DNI'] == dni]

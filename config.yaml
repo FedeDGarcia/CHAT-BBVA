@@ -148,6 +148,22 @@ mensajes:
       resultados:
         True: 13
         False: 16
+  15:
+    texto: >
+      "
+      entendemos que este no es un monto viable para cancelar tu deuda. Desde CDN te podemos ofrecer las siguientes opciones de pago,
+      elegí la que más te convenga!
+      A) Cancelas por {0} de ${1}
+      B) Cancelas por {2} de ${3}
+      C) Cancelas por {4} de ${5}
+      "
+    funcion: dame_planes
+    siguientes:
+      funcion: "lambda x: x"
+      resultados:
+        A: 17
+        B: 17
+        C: 17
   16:
     texto: >
       "
