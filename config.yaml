@@ -103,5 +103,19 @@ mensajes:
       resultados:
         1: 13
         2: 14
+  12:
+    texto: >
+      "
+      Desconocemos la situación de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por {0}.
+      Ves factible abonar este estado?
+      1) SI
+      2) NO
+      "
+    funcion: dame_deuda
+    siguientes:
+      funcion: "lambda x: x"
+      resultados:
+        1: 11
+        2: 15
   18:
     texto: Conversación terminada
