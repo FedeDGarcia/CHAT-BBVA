@@ -117,6 +117,30 @@ mensajes:
       resultados:
         1: 11
         2: 15
+  13:
+    texto: >
+      "
+      Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envío del convenio.
+      el importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:
+      Te brindamos el paso a paso de como debes realizarlo en un cajero automático:
+        1) pagos
+        2) recaudaciones
+        3) efectivo en pesos
+        4) código de servicio: 4482
+        5) número de depositante, por favor verificá de ingresar el DNI/CUIT/CUIL de la persona/empresa que adeuda
+        6) total a pagar: {0}
+        7) para transferencia a ICHTHYS S.R.L. (Razón social)
+           número: 3310422456/6 CUIT: 30715141627 CBU: 0170331120000042245663
+        Una vez que realices el pago por favor enviá el comprobante por:
+        whatsapp: wa.link/bbva_estudiocdn
+        email: cdncobranzas@companiadelnorte.com
+      Nuestro horario de recepción es de lunes a viernes de 9 a 17:30 hs o bien te podes contactar con nosotros al 0800 220 0059.
+      Saludos.
+      "
+    siguientes:
+      funcion: fin
+      resultados:
+        fin: 18
   14:
     texto: Indicanos en que fecha ves factible abonar tu deuda con BBVA en el siguiente formato ej 02/03/2024
     siguientes:
