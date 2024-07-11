@@ -90,5 +90,18 @@ mensajes:
       funcion: fin
       resultados:
         fin: 18
+  11:
+    texto: >
+    "
+    Perfecto, entonces el pago deberá realizarse antes de {0}. ¿Confirma?
+    1) SI
+    2) NO
+    "
+    funcion: dame_fecha_limite
+    siguientes:
+      funcion: "lambda x: x"
+      resultados:
+        1: 13
+        2: 14
   18:
     texto: Conversación terminada

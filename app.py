@@ -44,12 +44,16 @@ def dame_deuda(dni: str):
     dni = int(dni)
     return dnis[dnis['DNI'] == dni]['DEUDA_TOTAL'].values[0]
 
+def dame_fecha_limite():
+    cantidad_dias = 5
+    fecha_limite = pd.Timestamp(datetime.today()) + calendario_con_feriados * cantidad_dias
+    return fecha_limite
+
 def dame_oferta_fecha(dni: str):
     dni = str(dni)
     fila = dnis[dnis['DNI'] == dni]
     oferta = fila['OFERTA CANCELATORIA'].values[0]
-    cantidad_dias = 5
-    fecha_limite = pd.Timestamp(datetime.today()) + calendario_con_feriados * 5
+    fecha_limite = dame_fecha_limite()
     return (oferta, fecha_limite)
 
 @app.post('/respuesta')
