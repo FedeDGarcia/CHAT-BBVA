@@ -146,7 +146,17 @@ mensajes:
     siguientes:
       funcion: validar_fecha
       resultados:
-        True: 15
+        True: 13
         False: 16
+  16:
+    texto: >
+      "
+      entiendo, te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.
+      Te brindamos además nuestro horario de atención es de lunes a viernes de 9 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobanzas@companiadelnorte.com
+      "
+    siguientes:
+      funcion: fin
+      resultado:
+        fin: 18
   18:
     texto: Conversación terminada
