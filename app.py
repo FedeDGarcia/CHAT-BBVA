@@ -12,7 +12,7 @@ with open('config.yaml', 'r') as f:
     config = yaml.safe_load(f)
 
 mensajes = config['mensajes']
-dnis = pd.read_excel(config['planilla'])
+dnis = pd.read_excel(config['planilla'], dtype={'DNI': str})
 feriados = ['2024-07-09', '2024-10-11']
 calendario_con_feriados = pd.offsets.CustomBusinessDay(holidays=feriados)
 
@@ -24,7 +24,6 @@ def fin(parametro):
     return 'fin'
 
 def verificar_dni(dni: str):
-    dni = int(dni)
     return dni in dnis['DNI'].values
 
 def verificar_correo(correo: str):
@@ -41,11 +40,9 @@ def verificar_fecha(fecha: str):
     return fecha > datetime.today()
 
 def dame_nombre(dni: str):
-    dni = int(dni)
     return dnis[dnis['DNI'] == dni]['NOMBRE'].values[0]
 
 def dame_deuda(dni: str):
-    dni = int(dni)
     return dnis[dnis['DNI'] == dni]['DEUDA_TOTAL'].values[0]
 
 def dame_fecha_limite():
@@ -54,12 +51,10 @@ def dame_fecha_limite():
     return fecha_limite
 
 def dame_planes(dni: str):
-    dni = int(dni)
     fila = dnis[dnis['DNI'] == dni]
     return fila[['CANT CUOTAS 1', 'MONTON CUOTA 1', 'CANT CUOTAS 2', 'MONTON CUOTA 2', 'CANT CUOTAS 3', 'MONTON CUOTAS 3']]
 
 def dame_oferta_fecha(dni: str):
-    dni = str(dni)
     fila = dnis[dnis['DNI'] == dni]
     oferta = fila['OFERTA CANCELATORIA'].values[0]
     fecha_limite = dame_fecha_limite()
