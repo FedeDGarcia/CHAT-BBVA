@@ -24,8 +24,28 @@ mensajes:
     texto: "{0} Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión"
     funcion: dame_nombre
     siguientes:
-      funcion: pasar
+      funcion: verificar_correo
       resultados:
-        pasar: 4
+        True: 4
+        False: 3
+  4:
+    texto: >
+        "
+        Muchas gracias! Te contamos que a la fecha estás en mora por un importe de {0}. Para poder ayudarte, decime el motivo de tu contacto
+        1) Ya pague
+        2) Quiero conocer mis opciones de pago
+        3) Libre deuda
+        4) Defensa del consumidor
+        5) Desconozco deuda/No tengo deuda con BBVA
+        "
+    funcion: dame_deuda
+    siguientes:
+      funcion: "lambda x: x"
+      resultados:
+        1: 5
+        2: 6
+        3: 7
+        4: 8
+        5: 9
   18:
     texto: Conversación terminada
