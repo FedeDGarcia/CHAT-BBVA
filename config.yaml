@@ -78,5 +78,11 @@ mensajes:
       funcion: fin
       resultados:
         fin: 18
+  9:
+    texto: Como desconoces la deuda, en breves un asesor se comunicará y te dará más detalles. Recordá que nuestro horario de atención es de lunes a viernes de 9 a 20 h y te podes contactar con nosotros al 0800 220 0059. Muchas gracias
+    siguientes:
+      funcion: fin
+      resultados:
+        fin: 18
   18:
     texto: Conversación terminada
