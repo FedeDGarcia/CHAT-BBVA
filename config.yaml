@@ -92,11 +92,11 @@ mensajes:
         fin: 18
   11:
     texto: >
-    "
-    Perfecto, entonces el pago deberá realizarse antes de {0}. ¿Confirma?
-    1) SI
-    2) NO
-    "
+      "
+      Perfecto, entonces el pago deberá realizarse antes de {0}. ¿Confirma?
+      1) SI
+      2) NO
+      "
     funcion: dame_fecha_limite
     siguientes:
       funcion: "lambda x: x"
