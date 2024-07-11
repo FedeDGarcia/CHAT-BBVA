@@ -20,6 +20,12 @@ mensajes:
       funcion: fin
       resultados:
         fin: 18
-
+  3:
+    texto: "{0} Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión"
+    funcion: dame_nombre
+    siguientes:
+      funcion: pasar
+      resultados:
+        pasar: 4
   18:
     texto: Conversación terminada
