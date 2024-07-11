@@ -84,5 +84,11 @@ mensajes:
       funcion: fin
       resultados:
         fin: 18
+  10:
+    texto: Muchas gracias por enviarnos el comprobante de pago, en las proximas 48 hs impactará en su cuenta
+    siguientes:
+      funcion: fin
+      resultados:
+        fin: 18
   18:
     texto: Conversación terminada
