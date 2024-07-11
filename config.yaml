@@ -72,5 +72,11 @@ mensajes:
       funcion: fin
       resultados:
         fin: 18
+  8:
+    texto: estimado/a te va a estar llamando a la brevedad el asesor designado a tu legajo en el horario de 9 a 17 hs. Saludos!
+    siguientes:
+      funcion: fin
+      resultados:
+        fin: 18
   18:
     texto: Conversación terminada
