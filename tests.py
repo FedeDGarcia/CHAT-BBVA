@@ -13,12 +13,15 @@ url = 'http://localhost:3000/respuesta'
 headers = {'Content-type': 'application/json'}
 df = pd.read_excel(config['planilla'], dtype={'DNI': str})
 
+dni_invalido = '12345678'
+dni_valido = '43527224'
+
+def verificar_valor(dni, campo, valor_esperado):
+    return df[df['dni'] == dni][campo].values[0] == valor_esperado
+
 def requestAPI(payload):
     response = requests.post(url, data=json.dumps(payload), headers=headers)
     return response.text.strip('"')
-
-dni_invalido = '12345678'
-dni_valido = '43527224'
 
 class Nodo0(unittest.TestCase):
     def test_dni_valido(self):
@@ -46,7 +49,7 @@ class Nodo2(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 2, 'mensaje': 'blabla'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Conversacion terminada')
+        self.assertEqual(response, 'Conversación terminada')
 
 class Nodo3(unittest.TestCase):
     def test_mail_valido(self):
@@ -74,19 +77,19 @@ class Nodo4(unittest.TestCase):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '3'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Para solicitar el libre deuda podés acercarte a la sucursal más cercana o comunicarse al 0800-999-2282 de lunes a viernes de 10 a 15 hs. Muchas gracias')
-        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'LIBRE DEUDA')
+        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'LIBRE DEUDA'))
 
     def test_defensa_consumidor(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '4'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Estimado/a te va a estar llamando a la brevedad el asesor designado a tu legajo en el horario de 9 a 17 hs. Saludos!')
-        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'DEFENSA DEL CONSUMIDOR')
+        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'DEFENSA DEL CONSUMIDOR'))
 
     def test_desconozco_deuda(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '5'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Como desconoces tu deuda, en breve un asesor se comunicará y te dará más detalles. Recordá que nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059. Muchas gracias')
-        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'DESCONOCE DEUDA')
+        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'DESCONOCE DEUDA'))
 
     def test_opcion_invalida(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '6'}
@@ -104,7 +107,7 @@ class Nodo5(unittest.TestCase):
         payload = {'nodo': 5, 'dni': dni_valido, 'mensaje': fecha_hoy}
         response = requestAPI(payload)
         self.assertEqual(response, 'Muchas gracias por enviarnos el comprobante de pago en las proximas 48 hs impactara en su cuenta')
-        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'Ya pagó')
+        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Ya pagó'))
 
     def test_otro_mes(self):
         fecha_hoy = datetime.today()
@@ -140,32 +143,32 @@ class Nodo7(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 7, 'mensaje': 'blabla'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Conversacion terminada')
+        self.assertEqual(response, 'Conversación terminada')
 
 class Nodo8(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 8, 'mensaje': 'blabla'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Conversacion terminada')
+        self.assertEqual(response, 'Conversación terminada')
 
 class Nodo9(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 9, 'mensaje': 'blabla'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Conversacion terminada')
+        self.assertEqual(response, 'Conversación terminada')
 
 class Nodo10(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 10, 'mensaje': 'blabla'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Conversacion terminada')
+        self.assertEqual(response, 'Conversación terminada')
 
 class Nodo11(unittest.TestCase):
     def test_confirma(self):
         payload = {'nodo': 11, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Gracias entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envío del convenio. El importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debés realizarlo en un cajero automático:\n1º PAGOS\n2º RECAUDACIONES\n3º EFECTIVO EN PESOS\n4º CODIGO DE SERVICIO: 4482\n5º NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6º TOTAL A PAGAR: (Valor primera cuota)\n7º PARA TRANSFERENCIA A ICHTSYS S.R.L. (Razón social)\nNUMERO: 331-422456/6 CUIT: 30715141627 CBU: 0170331120000042245663')
-        self.assertEqual(df[df['dni'] == dni]['fecha_de_pago'].values[0] == '01/01/2024')
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '01/01/2024'))
 
     def test_no_confirma(self):
         payload = {'nodo': 11, 'dni': dni_valido, 'mensaje': '2'}
@@ -197,7 +200,7 @@ class Nodo13(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 13, 'mensaje': 'blabla'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Conversacion terminada')
+        self.assertEqual(response, 'Conversación terminada')
 
 class Nodo14(unittest.TestCase):
     def test_fecha_pasada(self):
@@ -207,7 +210,7 @@ class Nodo14(unittest.TestCase):
         payload = {'nodo': 14, 'dni': dni_valido, 'mensaje': fecha_pasada}
         response = requestAPI(payload)
         self.assertEqual(response, 'Entiendo. Te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
-        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'No puede pagar')
+        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'No puede pagar'))
 
     def test_fecha_futura(self):
         fecha_hoy = datetime.today()
@@ -216,13 +219,13 @@ class Nodo14(unittest.TestCase):
         payload = {'nodo': 14, 'dni': dni_valido, 'mensaje': fecha_futura}
         response = requestAPI(payload)
         self.assertEqual(response, 'Gracias entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envío del convenio. El importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debés realizarlo en un cajero automático:\n1º PAGOS\n2º RECAUDACIONES\n3º EFECTIVO EN PESOS\n4º CODIGO DE SERVICIO: 4482\n5º NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6º TOTAL A PAGAR: (Valor primera cuota)\n7º PARA TRANSFERENCIA A ICHTSYS S.R.L. (Razón social)\nNUMERO: 331-422456/6 CUIT: 30715141627 CBU: 0170331120000042245663')
-        self.assertEqual(df[df['dni'] == dni]['fecha_de_pago'].values[0] == fecha_futura)
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', fecha_futura))
 
     def test_fecha_mal_formateada(self):
         payload = {'nodo': 14, 'dni': dni_valido, 'mensaje': '2100-02-02'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Entiendo. Te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
-        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'No puede pagar')
+        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'No puede pagar'))
 
     def test_dni_invalido(self):
         payload = {'nodo': 14, 'dni': dni_invalido, 'mensaje': '03/03/2100'}
@@ -234,8 +237,8 @@ class Nodo15(unittest.TestCase):
         payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'A'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Perfecto, entonces el pago deberá realizarse antes de 01/01/2020')
-        self.assertEqual(df[df['dni'] == dni]['cant_cuotas_elegido'].values[0] == 1)
-        self.assertEqual(df[df['dni'] == dni]['monto_elegido'].values[0] == 1)
+        self.assertTrue(verificar_valor(dni_valido, 'cant_cuotas_elegido', 1))
+        self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 1))
 
     def test_dni_invalido(self):
         payload = {'nodo': 15, 'dni': dni_invalido, 'mensaje': '03/03/2100'}
@@ -246,7 +249,7 @@ class Nodo16(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 16, 'mensaje': 'blabla'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Conversacion terminada')
+        self.assertEqual(response, 'Conversación terminada')
 
 class Nodo17(unittest.TestCase):
     def test_confirma(self):
@@ -259,7 +262,7 @@ class Nodo17(unittest.TestCase):
         payload = {'nodo': 17, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Entiendo. Te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
-        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'No puede pagar')
+        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'No puede pagar'))
 
     def test_dni_invalido(self):
         payload = {'nodo': 17, 'dni': dni_invalido, 'mensaje': '03/03/2100'}
