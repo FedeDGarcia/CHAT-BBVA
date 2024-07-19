@@ -62,11 +62,14 @@ def dame_oferta_fecha(dni: str):
 
 @app.post('/respuesta')
 async def respuesta(state: ActualState):
-    funcion = mensajes[state.nodo]['siguientes']['funcion']
-    decision = eval(funcion)(state.mensaje)
-    proximo_nodo = mensajes[state.nodo]['siguientes']['resultados'][decision]
-    valor_placeholder = eval(mensajes[proximo_nodo]['funcion'])(state.mensaje)
-    texto = mensajes[proximo_nodo]['texto'].format(valor_placeholder)
+    try:
+        funcion = mensajes[state.nodo]['siguientes']['funcion']
+        decision = eval(funcion)(state.mensaje)
+        proximo_nodo = mensajes[state.nodo]['siguientes']['resultados'][decision]
+        valor_placeholder = eval(mensajes[proximo_nodo]['funcion'])(state.mensaje)
+        texto = mensajes[proximo_nodo]['texto'].format(valor_placeholder)
+    except:
+        texto = 'payload invalido'
     return texto
 
 if __name__ == '__main__':
