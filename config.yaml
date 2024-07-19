@@ -8,7 +8,7 @@ mensajes:
         False: 1
         True: 3
   1:
-    texto: Hoy no tenemos asignada deuda con tu número de DNI. Indicanos por favor el número de DNI DEL TITULAR DE LA CUENTA
+    texto: Hoy no tenemos asignada una deuda con tu número de DNI. Indicanos por favor el número de DNI DEL TITULAR DE LA CUENTA
     siguientes:
       funcion: verificar_dni
       resultados:
