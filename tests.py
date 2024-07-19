@@ -107,3 +107,19 @@ class Nodo5(unnittest.TestCase):
         payload = {'nodo': 5, 'dni': '38602747', 'mensaje': fecha_hoy}
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
+
+class Nodo6(unnittest.TestCase):
+    def test_acepta(self):
+        payload = {'nodo': 6, 'dni': '38602747', 'mensaje': '1'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Perfecto, entonces el pago deberá realizarse antes de 01/01/2020 ¿Confirma?\n1) SI\n2) NO')
+
+    def test_no_acepta(self):
+        payload = {'nodo': 6, 'dni': '38602747', 'mensaje': '1'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Desconocemos la sitación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos con hasta 50 % off. Abonando hoy cancelás tu deuda por $ 10. Ves factible abonar este saldo?\n1) SI\n2) NO')
+
+    def test_dni_invalido(self):
+        payload = {'nodo': 6, 'dni': '12345678', 'mensaje': '1'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'payload invalido')
