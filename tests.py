@@ -29,7 +29,7 @@ class Nodo0(unittest.TestCase):
     def test_dni_invalido(self):
         payload = {'nodo': 0, 'mensaje': dni_invalido}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Hoy no tenemos asignada una deuda con tu numero de DNI. Indicanos por favor el numero de DNI del titular de la cuenta')
+        self.assertEqual(response, 'Hoy no tenemos asignada una deuda con tu número de DNI. Indicanos por favor el número de DNI DEL TITULAR DE LA CUENTA')
 
 class Nodo1(unittest.TestCase):
     def test_dni_valido(self):
