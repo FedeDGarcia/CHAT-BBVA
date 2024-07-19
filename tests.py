@@ -235,6 +235,24 @@ class Nodo15(unnittest.TestCase):
 
 class Nodo16(unnittest.TestCase):
     def test_terminar(self):
-        payload = {'nodo': 13, 'mensaje': 'blabla'}
+        payload = {'nodo': 16, 'mensaje': 'blabla'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Conversacion terminada')    
+        self.assertEqual(response, 'Conversacion terminada')
+
+class Nodo17(unnittest.TestCase):
+    def test_confirma(self):
+        payload = {'nodo': 17, 'dni': '38602747', 'mensaje': '1'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Gracias entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envío del convenio. El importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debés realizarlo en un cajero automático:\n1º PAGOS\n2º RECAUDACIONES\n3º EFECTIVO EN PESOS\n4º CODIGO DE SERVICIO: 4482\n5º NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6º TOTAL A PAGAR: (Valor primera cuota)\n7º PARA TRANSFERENCIA A ICHTSYS S.R.L. (Razón social)\nNUMERO: 331-422456/6 CUIT: 30715141627 CBU: 0170331120000042245663')
+        self.assertEqual(df[df['dni'] == dni]['fecha_de_pago'].values[0] == '01/01/2020')
+
+    def test_no_confirma(self):
+        payload = {'nodo': 17, 'dni': '38602747', 'mensaje': '2'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Entiendo. Te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
+        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'No puede pagar')
+
+    def test_dni_invalido(self):
+        payload = {'nodo': 17, 'dni': '12345678', 'mensaje': '03/03/2100'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'payload invalido')
