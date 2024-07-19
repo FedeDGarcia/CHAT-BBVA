@@ -166,3 +166,25 @@ class Nodo11(unnittest.TestCase):
         payload = {'nodo': 11, 'dni': '12345678', 'mensaje': '1'}
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
+
+class Nodo12(unnittest.TestCase):
+    def test_abona(self):
+        payload = {'nodo': 12, 'dni': '38602747', 'mensaje': '1'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Perfecto, entonces el pago deberá realizarse antes de 01/01/2020 ¿Confirma?\n1) SI\n2) NO')
+
+    def test_no_abona(self):
+        payload = {'nodo': 12, 'dni': '38602747', 'mensaje': '2'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Entendemos que este no es un monto viable para vos para cancelar tu deuda. Desde CDN te podemos ofrecer las siguientes opciones de pago ¡Elegí la que más te convenga!\nA) Cancelas por 1 DE $ 10\nB) Cancelas por 2 DE $ 20\nC) Cancelas por 3 de $ 30')
+
+    def test_dni_invalido(self):
+        payload = {'nodo': 12, 'dni': '12345678', 'mensaje': '1'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'payload invalido')
+
+class Nodo13(unnittest.TestCase):
+    def test_terminar(self):
+        payload = {'nodo': 13, 'mensaje': 'blabla'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Conversacion terminada')
