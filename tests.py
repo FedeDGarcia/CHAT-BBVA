@@ -156,6 +156,7 @@ class Nodo11(unnittest.TestCase):
         payload = {'nodo': 11, 'dni': '38602747', 'mensaje': '1'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Gracias entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envío del convenio. El importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debés realizarlo en un cajero automático:\n1º PAGOS\n2º RECAUDACIONES\n3º EFECTIVO EN PESOS\n4º CODIGO DE SERVICIO: 4482\n5º NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6º TOTAL A PAGAR: (Valor primera cuota)\n7º PARA TRANSFERENCIA A ICHTSYS S.R.L. (Razón social)\nNUMERO: 331-422456/6 CUIT: 30715141627 CBU: 0170331120000042245663')
+        self.assertEqual(df[df['dni'] == dni]['fecha_de_pago'].values[0] == '01/01/2024')
 
     def test_no_confirma(self):
         payload = {'nodo': 11, 'dni': '38602747', 'mensaje': '2'}
@@ -206,6 +207,7 @@ class Nodo14(unnittest.TestCase):
         payload = {'nodo': 14, 'dni': '38602747', 'mensaje': fecha_futura}
         response = requestAPI(payload)
         self.assertEqual(response, 'Gracias entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envío del convenio. El importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debés realizarlo en un cajero automático:\n1º PAGOS\n2º RECAUDACIONES\n3º EFECTIVO EN PESOS\n4º CODIGO DE SERVICIO: 4482\n5º NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6º TOTAL A PAGAR: (Valor primera cuota)\n7º PARA TRANSFERENCIA A ICHTSYS S.R.L. (Razón social)\nNUMERO: 331-422456/6 CUIT: 30715141627 CBU: 0170331120000042245663')
+        self.assertEqual(df[df['dni'] == dni]['fecha_de_pago'].values[0] == fecha_futura)
 
     def test_fecha_mal_formateada(self):
         payload = {'nodo': 14, 'dni': '38602747', 'mensaje': '2100-02-02'}
