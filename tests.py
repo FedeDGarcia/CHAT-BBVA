@@ -219,3 +219,16 @@ class Nodo14(unnittest.TestCase):
         payload = {'nodo': 14, 'dni': '12345678', 'mensaje': '03/03/2100'}
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
+
+class Nodo15(unnittest.TestCase):
+    def elige_opcion_pago(self):
+        payload = {'nodo': 14, 'dni': '38602747', 'mensaje': 'A'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Perfecto, entonces el pago deberá realizarse antes de 01/01/2020')
+        self.assertEqual(df[df['dni'] == dni]['cant_cuotas_elegido'].values[0] == 1)
+        self.assertEqual(df[df['dni'] == dni]['monto_elegido'].values[0] == 1)
+
+    def test_dni_invalido(self):
+        payload = {'nodo': 15, 'dni': '12345678', 'mensaje': '03/03/2100'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'payload invalido')
