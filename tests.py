@@ -2,7 +2,13 @@ import unittest
 import requests
 from datetime import datetime, timedelta
 import pandas as pd
+import yaml
+import json
 
+with open('config.yaml', 'r') as f:
+    config = yaml.safe_load(f)
+
+mensajes = config['mensajes']
 url = 'http://localhost:3000/respuesta'
 headers = {'Content-type': 'application/json'}
 df = pd.read_excel(config['planilla'], dtype={'DNI': str})
@@ -33,13 +39,13 @@ class Nodo1(unittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response, 'Al momento en CDN no tenemos asignada tu deuda por favor contactate con BBVA al 0800-999-2282 de lunes a viernes de 10 a 15 hs')
 
-class Nodo2(unnittest.TestCase):
+class Nodo2(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 2, 'mensaje': 'blabla'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Conversacion terminada')
 
-class Nodo3(unnittest.TestCase):
+class Nodo3(unittest.TestCase):
     def test_mail_valido(self):
         payload = {'nodo': 3, 'dni': '38602747', 'mensaje': 'prueba@gmail.com'}
         response = requestAPI(payload)
@@ -50,7 +56,7 @@ class Nodo3(unnittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response, 'ACOSTA ARRIETA FEDERICO AGUSTI Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
 
-class Nodo4(unnittest.TestCase):
+class Nodo4(unittest.TestCase):
     def test_pago(self):
         payload = {'nodo': 4, 'dni': '38602747', 'mensaje': '1'}
         response = requestAPI(payload)
@@ -89,7 +95,7 @@ class Nodo4(unnittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
 
-class Nodo5(unnittest.TestCase):
+class Nodo5(unittest.TestCase):
     def test_mes_actual(self):
         fecha_hoy = datetime.today().strftime("%d/%m/%Y")
         payload = {'nodo': 5, 'dni': '38602747', 'mensaje': fecha_hoy}
@@ -111,7 +117,7 @@ class Nodo5(unnittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
 
-class Nodo6(unnittest.TestCase):
+class Nodo6(unittest.TestCase):
     def test_acepta(self):
         payload = {'nodo': 6, 'dni': '38602747', 'mensaje': '1'}
         response = requestAPI(payload)
@@ -127,31 +133,31 @@ class Nodo6(unnittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
 
-class Nodo7(unnittest.TestCase):
+class Nodo7(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 7, 'mensaje': 'blabla'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Conversacion terminada')
 
-class Nodo8(unnittest.TestCase):
+class Nodo8(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 8, 'mensaje': 'blabla'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Conversacion terminada')
 
-class Nodo9(unnittest.TestCase):
+class Nodo9(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 9, 'mensaje': 'blabla'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Conversacion terminada')
 
-class Nodo10(unnittest.TestCase):
+class Nodo10(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 10, 'mensaje': 'blabla'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Conversacion terminada')
 
-class Nodo11(unnittest.TestCase):
+class Nodo11(unittest.TestCase):
     def test_confirma(self):
         payload = {'nodo': 11, 'dni': '38602747', 'mensaje': '1'}
         response = requestAPI(payload)
@@ -168,7 +174,7 @@ class Nodo11(unnittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
 
-class Nodo12(unnittest.TestCase):
+class Nodo12(unittest.TestCase):
     def test_abona(self):
         payload = {'nodo': 12, 'dni': '38602747', 'mensaje': '1'}
         response = requestAPI(payload)
@@ -184,13 +190,13 @@ class Nodo12(unnittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
 
-class Nodo13(unnittest.TestCase):
+class Nodo13(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 13, 'mensaje': 'blabla'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Conversacion terminada')
 
-class Nodo14(unnittest.TestCase):
+class Nodo14(unittest.TestCase):
     def test_fecha_pasada(self):
         fecha_hoy = datetime.today()
         fecha_pasada = fecha_hoy - timedelta(years=3)
@@ -220,7 +226,7 @@ class Nodo14(unnittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
 
-class Nodo15(unnittest.TestCase):
+class Nodo15(unittest.TestCase):
     def elige_opcion_pago(self):
         payload = {'nodo': 15, 'dni': '38602747', 'mensaje': 'A'}
         response = requestAPI(payload)
@@ -233,13 +239,13 @@ class Nodo15(unnittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
 
-class Nodo16(unnittest.TestCase):
+class Nodo16(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 16, 'mensaje': 'blabla'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Conversacion terminada')
 
-class Nodo17(unnittest.TestCase):
+class Nodo17(unittest.TestCase):
     def test_confirma(self):
         payload = {'nodo': 17, 'dni': '38602747', 'mensaje': '1'}
         response = requestAPI(payload)
