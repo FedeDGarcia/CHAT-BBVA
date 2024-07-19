@@ -18,13 +18,13 @@ def requestAPI(payload):
     return response.text.strip('"')
 
 dni_invalido = '12345678'
-dni_valido = '38602747'
+dni_valido = '43527224'
 
 class Nodo0(unittest.TestCase):
     def test_dni_valido(self):
         payload = {'nodo': 0, 'mensaje': dni_valido}
         response = requestAPI(payload)
-        self.assertEqual(response, 'ACOSTA ARRIETA FEDERICO AGUSTI Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
+        self.assertEqual(response, 'URO ROCIO MARCELA Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
 
     def test_dni_invalido(self):
         payload = {'nodo': 0, 'mensaje': dni_invalido}
