@@ -65,16 +65,19 @@ class Nodo4(unnittest.TestCase):
         payload = {'nodo': 4, 'dni': '38602747', 'mensaje': '3'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Para solicitar el libre deuda podés acercarte a la sucursal más cercana o comunicarse al 0800-999-2282 de lunes a viernes de 10 a 15 hs. Muchas gracias')
+        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'LIBRE DEUDA')
 
     def test_defensa_consumidor(self):
         payload = {'nodo': 4, 'dni': '38602747', 'mensaje': '4'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Estimado/a te va a estar llamando a la brevedad el asesor designado a tu legajo en el horario de 9 a 17 hs. Saludos!')
+        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'DEFENSA DEL CONSUMIDOR')
 
     def test_desconozco_deuda(self):
         payload = {'nodo': 4, 'dni': '38602747', 'mensaje': '5'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Como desconoces tu deuda, en breve un asesor se comunicará y te dará más detalles. Recordá que nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059. Muchas gracias')
+        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'DESCONOCE DEUDA')
 
     def test_opcion_invalida(self):
         payload = {'nodo': 4, 'dni': '38602747', 'mensaje': '6'}
@@ -123,3 +126,5 @@ class Nodo6(unnittest.TestCase):
         payload = {'nodo': 6, 'dni': '12345678', 'mensaje': '1'}
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
+
+class Nodo7(unnittest.TestCase):
