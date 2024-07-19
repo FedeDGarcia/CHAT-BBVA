@@ -15,7 +15,7 @@ df = pd.read_excel(config['planilla'], dtype={'DNI': str})
 
 def requestAPI(payload):
     response = requests.post(url, data=json.dumps(payload), headers=headers)
-    return response.text
+    return response.text.strip('"')
 
 dni_invalido = '12345678'
 dni_valido = '38602747'
