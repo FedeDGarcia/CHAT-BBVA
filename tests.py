@@ -256,3 +256,6 @@ class Nodo17(unnittest.TestCase):
         payload = {'nodo': 17, 'dni': '12345678', 'mensaje': '03/03/2100'}
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
+
+if __name__ == '__main__':
+    unittest.main()
