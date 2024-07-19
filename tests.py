@@ -33,12 +33,12 @@ class Nodo0(unittest.TestCase):
 
 class Nodo1(unittest.TestCase):
     def test_dni_valido(self):
-        payload = {'nodo': 0, 'mensaje': dni_valido}
+        payload = {'nodo': 1, 'mensaje': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response, 'ACOSTA ARRIETA FEDERICO AGUSTI Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
 
     def test_dni_invalido(self):
-        payload = {'nodo': 0, 'mensaje': dni_invalido}
+        payload = {'nodo': 1, 'mensaje': dni_invalido}
         response = requestAPI(payload)
         self.assertEqual(response, 'Al momento en CDN no tenemos asignada tu deuda por favor contactate con BBVA al 0800-999-2282 de lunes a viernes de 10 a 15 hs')
 
