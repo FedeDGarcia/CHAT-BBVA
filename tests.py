@@ -12,32 +12,32 @@ class Nodo0(unittest.TestCase):
     def test_dni_valido(self):
         payload = {'nodo': 0, 'mensaje': '38602747'}
         response = requestAPI(payload)
-        self.assert(response == 'ACOSTA ARRIETA FEDERICO AGUSTI Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
+        self.assertEqual(response, 'ACOSTA ARRIETA FEDERICO AGUSTI Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
 
     def test_dni_invalido(self):
         payload = {'nodo': 0, 'mensaje': '12345678'}
         response = requestAPI(payload)
-        self.assert(response == 'Hoy no tenemos asignada una deuda con tu numero de DNI. Indicanos por favor el numero de DNI del titular de la cuenta')
+        self.assertEqual(response, 'Hoy no tenemos asignada una deuda con tu numero de DNI. Indicanos por favor el numero de DNI del titular de la cuenta')
 
 class Nodo1(unittest.TestCase):
     def test_dni_valido(self):
         payload = {'nodo': 0, 'mensaje': '38602747'}
         response = requestAPI(payload)
-        self.assert(response == 'ACOSTA ARRIETA FEDERICO AGUSTI Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
+        self.assertEqual(response, 'ACOSTA ARRIETA FEDERICO AGUSTI Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
 
     def test_dni_invalido(self):
         payload = {'nodo': 0, 'mensaje': '12345678'}
         response = requestAPI(payload)
-        self.assert(response == 'Al momento en CDN no tenemos asignada tu deuda por favor contactate con BBVA al 0800-999-2282 de lunes a viernes de 10 a 15 hs')
+        self.assertEqual(response, 'Al momento en CDN no tenemos asignada tu deuda por favor contactate con BBVA al 0800-999-2282 de lunes a viernes de 10 a 15 hs')
 
 class Nodo2(unnittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 2, 'mensaje': 'blabla'}
         response = requestAPI(payload)
-        self.assert(response == 'Conversacion terminada')
+        self.assertEqual(response, 'Conversacion terminada')
 
 class Nodo3(unnittest.TestCase):
     def test_mail_valido(self):
         payload = {'nodo': 3, 'dni': '38602747', 'mensaje': 'prueba@gmail.com'}
         response = requestAPI(payload)
-        self.assert(response == 'Muchas gracias')
+        self.assertEqual(response, 'Muchas gracias')
