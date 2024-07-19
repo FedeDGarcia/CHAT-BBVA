@@ -41,3 +41,8 @@ class Nodo3(unnittest.TestCase):
         payload = {'nodo': 3, 'dni': '38602747', 'mensaje': 'prueba@gmail.com'}
         response = requestAPI(payload)
         self.assertEqual(response, 'Muchas gracias')
+
+    def test_mail_invalido(self):
+        payload = {'nodo': 3, 'dni': '38602747', 'mensaje': 'blabla'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'ACOSTA ARRIETA FEDERICO AGUSTI Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
