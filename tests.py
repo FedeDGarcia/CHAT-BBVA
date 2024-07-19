@@ -128,3 +128,25 @@ class Nodo6(unnittest.TestCase):
         self.assertEqual(response, 'payload invalido')
 
 class Nodo7(unnittest.TestCase):
+    def test_terminar(self):
+        payload = {'nodo': 7, 'mensaje': 'blabla'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Conversacion terminada')
+
+class Nodo8(unnittest.TestCase):
+    def test_terminar(self):
+        payload = {'nodo': 8, 'mensaje': 'blabla'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Conversacion terminada')
+
+class Nodo9(unnittest.TestCase):
+    def test_terminar(self):
+        payload = {'nodo': 9, 'mensaje': 'blabla'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Conversacion terminada')
+
+class Nodo10(unnittest.TestCase):
+    def test_terminar(self):
+        payload = {'nodo': 10, 'mensaje': 'blabla'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Conversacion terminada')
