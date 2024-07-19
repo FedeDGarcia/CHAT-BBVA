@@ -1,8 +1,11 @@
 import unittest
 import requests
+from datetime import datetime, timedelta
+import pandas as pd
 
 url = 'http://localhost:3000/respuesta'
 headers = {'Content-type': 'application/json'}
+df = pd.read_excel(config['planilla'], dtype={'DNI': str})
 
 def requestAPI(payload):
     response = requests.post(url, data=json.dumps(payload), headers=headers)
@@ -80,5 +83,27 @@ class Nodo4(unnittest.TestCase):
 
     def test_dni_invalido(self):
         payload = {'nodo': 4, 'dni': '12345678', 'mensaje': '1'}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'payload invalido')
+
+class Nodo5(unnittest.TestCase):
+    def test_mes_actual(self):
+        fecha_hoy = datetime.today().strftime("%d/%m/%Y")
+        payload = {'nodo': 5, 'dni': '38602747', 'mensaje': fecha_hoy}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'Muchas gracias por enviarnos el comprobante de pago en las proximas 48 hs impactara en su cuenta')
+        self.assertEqual(df[df['dni'] == dni]['ESTADO'].values[0] == 'Ya pagó')
+
+    def test_otro_mes(self):
+        fecha_hoy = datetime.today()
+        fecha_mes_siguiente = fecha_hoy + timedelta(days=30)
+        fecha_mes_siguiente = fecha_mes_siguiente.strftime("%d/%m/%Y")
+        payload = {'nodo': 5, 'dni': '38602747', 'mensaje': fecha_mes_siguiente}
+        response = requestAPI(payload)
+        self.assertEqual(response, 'payload invalido')
+
+    def test_dni_invalido(self):
+        fecha_hoy = datetime.today().strftime("%d/%m/%Y")
+        payload = {'nodo': 5, 'dni': '38602747', 'mensaje': fecha_hoy}
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
