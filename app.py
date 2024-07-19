@@ -66,9 +66,13 @@ async def respuesta(state: ActualState):
         funcion = mensajes[state.nodo]['siguientes']['funcion']
         decision = eval(funcion)(state.mensaje)
         proximo_nodo = mensajes[state.nodo]['siguientes']['resultados'][decision]
-        valor_placeholder = eval(mensajes[proximo_nodo]['funcion'])(state.mensaje)
-        texto = mensajes[proximo_nodo]['texto'].format(valor_placeholder)
-    except:
+        if 'funcion' in mensajes[proximo_nodo].keys():
+            valor_placeholder = eval(mensajes[proximo_nodo]['funcion'])(state.mensaje)
+            texto = mensajes[proximo_nodo]['texto'].format(valor_placeholder)
+        else:
+            texto = mensajes[proximo_nodo]['texto']
+    except Exception as e:
+        print(e)
         texto = 'payload invalido'
     return texto
 
