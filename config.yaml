@@ -40,7 +40,7 @@ mensajes:
         "
     funcion: dame_deuda
     siguientes:
-      funcion: "lambda x: x"
+      funcion: "int"
       resultados:
         1: 5
         2: 6
@@ -62,7 +62,7 @@ mensajes:
       "
     funcion: dame_oferta_fecha
     siguientes:
-      funcion: "lambda x: x"
+      funcion: "int"
       resultados:
         1: 11
         2: 12
@@ -99,7 +99,7 @@ mensajes:
       "
     funcion: dame_fecha_limite
     siguientes:
-      funcion: "lambda x: x"
+      funcion: "int"
       resultados:
         1: 13
         2: 14
@@ -113,7 +113,7 @@ mensajes:
       "
     funcion: dame_deuda
     siguientes:
-      funcion: "lambda x: x"
+      funcion: "int"
       resultados:
         1: 11
         2: 15
@@ -159,7 +159,7 @@ mensajes:
       "
     funcion: dame_planes
     siguientes:
-      funcion: "lambda x: x"
+      funcion: "int"
       resultados:
         A: 17
         B: 17
@@ -183,7 +183,7 @@ mensajes:
       "
     funcion: dame_fecha_limite
     siguientes:
-      funcion: "lambda x: x"
+      funcion: "int"
       resultados:
         1: 16
         2: 13
