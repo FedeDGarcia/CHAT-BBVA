@@ -101,6 +101,22 @@ def dame_oferta_fecha(dni: str, *args):
     fecha_limite = dame_fecha_limite(dni)
     return [oferta, fecha_limite]
 
+def confirma_pago(mensaje: str, dni: str):
+    if mensaje == "2":
+        dnis = pd.read_csv(config['planilla'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int})
+        dnis.loc[dnis['DNI'] == dni, ['ESTADO']] = 'No puede pagar'
+        dnis.loc[dnis['DNI'] == dni, ['cant_cuotas_elegido']] = None
+        dnis.loc[dnis['DNI'] == dni, ['monto_elegido']] = None
+        dnis.to_csv(config['planilla'], index=False)
+    return mensaje
+
+def elegir_plan(mensaje: str, dni: str):
+    dnis = pd.read_csv(config['planilla'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int})
+    dnis.loc[dnis['DNI'] == dni, ['cant_cuotas_elegido']] = dnis.loc[dnis['DNI'] == dni, ['CANT  CUOTAS'+mensaje]]
+    dnis.loc[dnis['DNI'] == dni, ['monto_elegido']] = dnis.loc[dnis['DNI'] == dni, ['MONTON CUOTA '+mensaje]]
+    dnis.to_csv(config['planilla'], index=False)
+    return "17"
+
 @app.post('/respuesta')
 async def respuesta(state: ActualState):
     try:

@@ -142,20 +142,18 @@ mensajes:
   15:
     texto: |-
       Entendemos que este no es un monto viable para vos para cancelar tu deuda. Desde CDN te podemos ofrecer las siguientes opciones de pago ¡Elegí la que más te convenga!
-      A) Cancelas por {0} DE ${1}
-      B) Cancelas por {2} DE ${3}
-      C) Cancelas por {4} DE ${5}
+      1) Cancelas por {0} DE ${1}
+      2) Cancelas por {2} DE ${3}
+      3) Cancelas por {4} DE ${5}
     funcion: dame_planes
     siguientes:
-      funcion: "lambda x, y: x"
+      funcion: elegir_plan
       resultados:
-        A: 17
-        B: 17
-        C: 17
+        17: 17
   16:
     texto: |-
       Entiendo. Te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.
-      Te brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com
+      Te brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com
     siguientes:
       funcion: fin
       resultados:
@@ -167,7 +165,7 @@ mensajes:
       2) NO
     funcion: dame_fecha_limite
     siguientes:
-      funcion: "lambda x, y: x"
+      funcion: confirma_pago
       resultados:
         1: 13
         2: 16
