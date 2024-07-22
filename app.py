@@ -112,14 +112,14 @@ async def respuesta(state: ActualState):
             if isinstance(valor_placeholder, list):
                 texto = mensajes[proximo_nodo]['texto'].format(*valor_placeholder)
             else:
-                print(mensajes[proximo_nodo]['texto'])
                 texto = mensajes[proximo_nodo]['texto'].format(valor_placeholder)
+                print(texto)
         else:
             texto = mensajes[proximo_nodo]['texto']
     except Exception as e:
         print(e)
         texto = 'payload invalido'
-    return texto
+    return {"respuesta": texto}
 
 @app.post('/telefono')
 async def telefono(telefono: Telefono):
@@ -131,7 +131,7 @@ async def telefono(telefono: Telefono):
         texto = 'OK'
     else:
         texto = 'payload invalido'
-    return texto
+    return {'respuesta': texto}
 
 if __name__ == '__main__':
     uvicorn.run(app, host='localhost', port=3000)
