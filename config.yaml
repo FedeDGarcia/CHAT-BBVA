@@ -1,4 +1,4 @@
-planilla: variables_BBVA.xlsx
+planilla: variables_BBVA.csv
 mensajes:
   0:
     texto: Hola! Soy Mora, el asistente virtual de CDN. ¿Me dirías tu número de DNI?
@@ -29,18 +29,16 @@ mensajes:
         True: 4
         False: 3
   4:
-    texto: >
-        "
-        Muchas gracias! Te contamos que a la fecha estás en mora por un importe de {0}. Para poder ayudarte, decime el motivo de tu contacto
+    texto: |-
+        Muchas gracias! Te contamos que a la fecha estás en mora por un importe de ${0}. Para poder ayudarte, decime el motivo de tu contacto
         1) Ya pague
         2) Quiero conocer mis opciones de pago
         3) Libre deuda
         4) Defensa del consumidor
         5) Desconozco deuda/No tengo deuda con BBVA
-        "
     funcion: dame_deuda
     siguientes:
-      funcion: "int"
+      funcion: verificar_estado
       resultados:
         1: 5
         2: 6
@@ -48,38 +46,37 @@ mensajes:
         4: 8
         5: 9
   5:
-    texto: "Perfecto, te pedimos que nos indiques la fecha de pago ej: 01/03/2024. Y nos envíes el archivo adjunto del comprobante para poder registrarlo"
+    texto: "Perfecto, te pedimos que nos indiques la fecha de pago EJ: 01/03/2024 y nos envíes el archivo adjunto del comprobante para poder registrarlo"
     siguientes:
       funcion: verificar_mes_actual
-      True: 10
-      False: 5
+      resultados:
+        True: 10
+        False: 5
   6:
-    texto: >
-      "
-      Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria, cancelas por {0}. ¿Ves factible abonar esto al {1}?
+    texto: |-
+      Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria, cancelas por ${0}. ¿Ves factible abonar esto al {1}?
       1) SI
       2) NO
-      "
     funcion: dame_oferta_fecha
     siguientes:
-      funcion: "int"
+      funcion: "lambda x, y: x"
       resultados:
         1: 11
         2: 12
   7:
-    texto: Para solicitar el libre deuda podes acercarte a la sucursal más cercana o comunicarse al 0800-999-2282 de lunes a viernes de 10 a 15 hs. Muchas gracias
+    texto: Para solicitar el libre deuda podés acercarte a la sucursal más cercana o comunicarse al 0800-999-2282 de lunes a viernes de 10 a 15 hs. Muchas gracias
     siguientes:
       funcion: fin
       resultados:
         fin: 18
   8:
-    texto: estimado/a te va a estar llamando a la brevedad el asesor designado a tu legajo en el horario de 9 a 17 hs. Saludos!
+    texto: Estimado/a te va a estar llamando a la brevedad el asesor designado a tu legajo en el horario de 9 a 17 hs. Saludos!
     siguientes:
       funcion: fin
       resultados:
         fin: 18
   9:
-    texto: Como desconoces la deuda, en breves un asesor se comunicará y te dará más detalles. Recordá que nuestro horario de atención es de lunes a viernes de 9 a 20 h y te podes contactar con nosotros al 0800 220 0059. Muchas gracias
+    texto: Como desconoces la deuda, en breves un asesor se comunicará y te dará más detalles. Recordá que nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059. Muchas gracias
     siguientes:
       funcion: fin
       resultados:
@@ -91,35 +88,30 @@ mensajes:
       resultados:
         fin: 18
   11:
-    texto: >
-      "
+    texto: |-
       Perfecto, entonces el pago deberá realizarse antes de {0}. ¿Confirma?
-      1) SI
-      2) NO
-      "
+        1) SI
+        2) NO
     funcion: dame_fecha_limite
     siguientes:
-      funcion: "int"
+      funcion: "lambda x, y: x"
       resultados:
         1: 13
         2: 14
   12:
-    texto: >
-      "
+    texto: |-
       Desconocemos la situación de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por {0}.
       Ves factible abonar este estado?
       1) SI
       2) NO
-      "
-    funcion: dame_deuda
+    funcion: dame_oferta
     siguientes:
-      funcion: "int"
+      funcion: "lambda x, y: x"
       resultados:
         1: 11
         2: 15
   13:
-    texto: >
-      "
+    texto: |-
       Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envío del convenio.
       el importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:
       Te brindamos el paso a paso de como debes realizarlo en un cajero automático:
@@ -136,56 +128,49 @@ mensajes:
         email: cdncobranzas@companiadelnorte.com
       Nuestro horario de recepción es de lunes a viernes de 9 a 17:30 hs o bien te podes contactar con nosotros al 0800 220 0059.
       Saludos.
-      "
     siguientes:
       funcion: fin
       resultados:
         fin: 18
   14:
-    texto: Indicanos en que fecha ves factible abonar tu deuda con BBVA en el siguiente formato ej 02/03/2024
+    texto: "Indicanos en que fecha ves factible abonar tu deuda con BBVA en el siguiente formato EJ: 02/03/2024"
     siguientes:
-      funcion: validar_fecha
+      funcion: verificar_fecha
       resultados:
         True: 13
         False: 16
   15:
-    texto: >
-      "
-      entendemos que este no es un monto viable para cancelar tu deuda. Desde CDN te podemos ofrecer las siguientes opciones de pago,
+    texto: |-
+      Entendemos que este no es un monto viable para cancelar tu deuda. Desde CDN te podemos ofrecer las siguientes opciones de pago,
       elegí la que más te convenga!
       A) Cancelas por {0} de ${1}
       B) Cancelas por {2} de ${3}
       C) Cancelas por {4} de ${5}
-      "
     funcion: dame_planes
     siguientes:
-      funcion: "int"
+      funcion: "lambda x, y: x"
       resultados:
         A: 17
         B: 17
         C: 17
   16:
-    texto: >
-      "
-      entiendo, te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.
+    texto: |-
+      Entiendo, te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.
       Te brindamos además nuestro horario de atención es de lunes a viernes de 9 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobanzas@companiadelnorte.com
-      "
     siguientes:
       funcion: fin
       resultados:
         fin: 18
   17:
-    texto: >
-      "
+    texto: |-
       Perfecto, entonces el pago deberá realizarse antes de {0}. ¿Confirma?
       1) SI
       2) NO
-      "
     funcion: dame_fecha_limite
     siguientes:
-      funcion: "int"
+      funcion: "lambda x, y: x"
       resultados:
-        1: 16
-        2: 13
+        1: 13
+        2: 16
   18:
     texto: Conversación terminada
