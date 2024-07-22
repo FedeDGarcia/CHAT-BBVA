@@ -154,8 +154,8 @@ mensajes:
         C: 17
   16:
     texto: |-
-      Entiendo, te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.
-      Te brindamos además nuestro horario de atención es de lunes a viernes de 9 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobanzas@companiadelnorte.com
+      Entiendo. Te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.
+      Te brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com
     siguientes:
       funcion: fin
       resultados:
