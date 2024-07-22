@@ -89,8 +89,11 @@ def dame_fecha_limite(dni: str, *args):
     return fecha_limite.date().strftime('%d/%m/%Y')
 
 def dame_planes(dni: str, *args):
+    print(dnis.dtypes)
     fila = dnis[dnis['DNI'] == dni]
-    return list(fila[['CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3']].values[0])
+    lista = list(fila[['CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3']].values[0])
+    lista = list(map(lambda x: int(x[1]) if x[0] % 2 == 0 else '{0:.2f}'.format(x[1]), enumerate(lista)))
+    return lista
 
 def dame_oferta_fecha(dni: str, *args):
     fila = dnis[dnis['DNI'] == dni]
