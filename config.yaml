@@ -54,7 +54,7 @@ mensajes:
         False: 5
   6:
     texto: |-
-      Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria, cancelas por ${0}. ¿Ves factible abonar esto al {1}?
+      Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria, cancelás por ${0}. ¿Ves factible abonar esto al {1}?
       1) SI
       2) NO
     funcion: dame_oferta_fecha
@@ -100,8 +100,8 @@ mensajes:
         2: 14
   12:
     texto: |-
-      Desconocemos la situación de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por {0}.
-      Ves factible abonar este estado?
+      Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por ${0}.
+      Ves factible abonar este saldo?
       1) SI
       2) NO
     funcion: dame_oferta

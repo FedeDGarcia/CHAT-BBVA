@@ -21,7 +21,7 @@ def verificar_valor(dni, campo, valor_esperado):
 
 def requestAPI(payload):
     response = requests.post(url, data=json.dumps(payload), headers=headers)
-    return response.text.strip('"')
+    return json.loads(response.text)['respuesta'].strip('"')
 
 class Nodo0(unittest.TestCase):
     def test_dni_valido(self):
@@ -55,13 +55,8 @@ class Nodo3(unittest.TestCase):
     def test_mail_valido(self):
         payload = {'nodo': 3, 'mensaje': 'prueba@gmail.com', 'dni': dni_valido}
         response = requestAPI(payload)
-        self.assertEqual(response, """Muchas gracias! Te contamos que a la fecha estás en mora por un importe de $ 16543.75. Para poder ayudarte, decime el motivo de tu contacto
-                1) Ya pague
-                2) Quiero conocer mis opciones de pago
-                3) Libre deuda
-                4) Defensa del consumidor
-                5) Desconozco deuda/No tengo deuda con BBVA""")
-        self.assertTrue(verificar_valor(dni_valido, 'MAIL', 'prueba@gmail.com'))
+        self.assertEqual(response, 'Muchas gracias! Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n1) Ya pague\n2) Quiero conocer mis opciones de pago\n3) Libre deuda\n4) Defensa del consumidor\n5) Desconozco deuda/No tengo deuda con BBVA')
+        self.assertTrue(verificar_valor(dni_valido, 'MAIL2', 'prueba@gmail.com'))
 
     def test_mail_invalido(self):
         payload = {'nodo': 3, 'mensaje': 'blabla', 'dni': dni_valido}
@@ -77,7 +72,7 @@ class Nodo4(unittest.TestCase):
     def test_opciones_pago(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria, cancelás por $15026.59613 ¿Ves factible abonar esto al 27/10/2024?\n1) SI\n2)NO')
+        self.assertEqual(response, 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria, cancelás por $15026.59613. ¿Ves factible abonar esto al 29/07/2024?\n1) SI\n2) NO')
 
     def test_libre_deuda(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '3'}
@@ -133,12 +128,12 @@ class Nodo6(unittest.TestCase):
     def test_acepta(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Perfecto, entonces el pago deberá realizarse antes de 26/07/2024. ¿Confirma?\n 1) SI\n 2) NO')
+        self.assertEqual(response, 'Perfecto, entonces el pago deberá realizarse antes de 29/07/2024. ¿Confirma?\n  1) SI\n  2) NO')
 
     def test_no_acepta(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Desconocemos la sitación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos con hasta 50 % off. Abonando hoy cancelás tu deuda por $ 10. Ves factible abonar este saldo?\n1) SI\n2) NO')
+        self.assertEqual(response, 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.844.\nVes factible abonar este saldo?\n1) SI\n2) NO')
 
     def test_dni_invalido(self):
         payload = {'nodo': 6, 'dni': dni_invalido, 'mensaje': '1'}
@@ -190,7 +185,7 @@ class Nodo12(unittest.TestCase):
     def test_abona(self):
         payload = {'nodo': 12, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Perfecto, entonces el pago deberá realizarse antes de 01/01/2020 ¿Confirma?\n1) SI\n2) NO')
+        self.assertEqual(response, 'Perfecto, entonces el pago deberá realizarse antes de 29/07/2024. ¿Confirma?\n  1) SI\n  2) NO')
 
     def test_no_abona(self):
         payload = {'nodo': 12, 'dni': dni_valido, 'mensaje': '2'}
