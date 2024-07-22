@@ -97,7 +97,7 @@ async def respuesta(state: ActualState):
         funcion = mensajes[nodo]['siguientes']['funcion']
         decision = str(eval(funcion)(state.mensaje, state.dni))
         proximo_nodo = mensajes[nodo]['siguientes']['resultados'][decision]
-        if not verificar_dni(state.dni):
+        if nodo not in ("0","1") and not verificar_dni(state.dni):
             raise Exception('DNI invalido')
         if 'funcion' in mensajes[proximo_nodo].keys():
             valor_placeholder = eval(mensajes[proximo_nodo]['funcion'])(state.dni)

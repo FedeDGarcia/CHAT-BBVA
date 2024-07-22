@@ -30,7 +30,7 @@ class Nodo0(unittest.TestCase):
         self.assertEqual(response, 'URO ROCIO MARCELA Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
 
     def test_dni_invalido(self):
-        payload = {'nodo': 0, 'mensaje': dni_invalido, 'dni': dni_valido}
+        payload = {'nodo': 0, 'mensaje': dni_invalido, 'dni': dni_invalido}
         response = requestAPI(payload)
         self.assertEqual(response, 'Hoy no tenemos asignada una deuda con tu número de DNI. Indicanos por favor el número de DNI DEL TITULAR DE LA CUENTA')
 
@@ -41,7 +41,7 @@ class Nodo1(unittest.TestCase):
         self.assertEqual(response, 'URO ROCIO MARCELA Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
 
     def test_dni_invalido(self):
-        payload = {'nodo': 1, 'mensaje': dni_invalido, 'dni': dni_valido}
+        payload = {'nodo': 1, 'mensaje': dni_invalido, 'dni': dni_invalido}
         response = requestAPI(payload)
         self.assertEqual(response, 'Al momento en CDN no tenemos asignada tu deuda, por favor contactate con BBVA al 0800-999-2282 DE LUNES A VIERNES DE 10 A 15 HS')
 
