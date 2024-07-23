@@ -13,7 +13,7 @@ with open('config.yaml', 'r') as f:
     config = yaml.load(f, Loader=yaml.BaseLoader)
 
 mensajes = config['mensajes']
-dnis = pd.read_csv(config['planilla'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
+dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
 feriados = ['2024-07-09', '2024-10-11']
 calendario_con_feriados = pd.offsets.CustomBusinessDay(holidays=feriados)
 
@@ -26,6 +26,11 @@ class Telefono(BaseModel):
     numero_telefono: str
     dni: str
 
+def modificar_csv(campo, valor, dni):
+    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int})
+    dnis.loc[dnis['DNI'] == dni, [campo]] = valor
+    dnis.to_csv(config['planilla'], index=False)
+
 def fin(parametro, *args):
     return 'fin'
 
@@ -37,29 +42,25 @@ def verificar_correo(correo: str, dni: str):
     if re.fullmatch(regex, correo) is None:
         raise Exception('mail invalido')
     else:
-        dnis = pd.read_csv(config['planilla'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int})
-        dnis.loc[dnis['DNI'] == dni, ['MAIL2']] = correo
-        dnis.to_csv(config['planilla'], index=False)
+        modificar_csv('MAIL2', correo, dni)
         return True
 
 def verificar_estado(opcion :str, dni:str):
-    dnis = pd.read_csv(config['planilla'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int})
+    estado = None
     if opcion == '3':
-        dnis.loc[dnis['DNI'] == dni, ['ESTADO']] = 'LIBRE DEUDA'
+        estado = 'LIBRE DEUDA'
     elif opcion == '4':
-        dnis.loc[dnis['DNI'] == dni, ['ESTADO']] = 'DEFENSA DEL CONSUMIDOR'
+        estado = 'DEFENSA DEL CONSUMIDOR'
     elif opcion == '5':
-        dnis.loc[dnis['DNI'] == dni, ['ESTADO']] = 'DESCONOCE DEUDA'
-    dnis.to_csv(config['planilla'], index=False)
+        estado = 'DESCONOCE DEUDA'
+    modificar_csv('ESTADO', estado, dni)
     return opcion
 
 def verificar_mes_actual(fecha: str, dni: str):
     fecha = datetime.strptime(fecha, '%d/%m/%Y')
     mes_actual = datetime.today().strftime('%m/%Y')
     if fecha <= datetime.today() and fecha.strftime('%m/%Y') == mes_actual:
-        dnis = pd.read_csv(config['planilla'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int})
-        dnis.loc[dnis['DNI'] == dni, ['ESTADO']] = 'Ya pagó'
-        dnis.to_csv(config['planilla'], index=False)
+        modificar_csv('ESTADO', 'Ya pagó', dni)
         return True
     else:
         raise Exception('mes incorrecto')
@@ -67,9 +68,7 @@ def verificar_mes_actual(fecha: str, dni: str):
 def verificar_fecha(fecha: str, dni: str):
     fecha_formateada = datetime.strptime(fecha, '%d/%m/%Y')
     if fecha_formateada > datetime.today():
-        dnis = pd.read_csv(config['planilla'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int})
-        dnis.loc[dnis['DNI'] == dni, ['fecha_de_pago']] = fecha
-        dnis.to_csv(config['planilla'], index=False)
+        modificar_csv('fecha_de_pago', fecha, dni)
         return True
     else:
         raise Exception('fecha incorrecta')
@@ -103,18 +102,14 @@ def dame_oferta_fecha(dni: str, *args):
 
 def confirma_pago(mensaje: str, dni: str):
     if mensaje == "2":
-        dnis = pd.read_csv(config['planilla'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int})
-        dnis.loc[dnis['DNI'] == dni, ['ESTADO']] = 'No puede pagar'
-        dnis.loc[dnis['DNI'] == dni, ['cant_cuotas_elegido']] = None
-        dnis.loc[dnis['DNI'] == dni, ['monto_elegido']] = None
-        dnis.to_csv(config['planilla'], index=False)
+        modificar_csv('ESTADO', 'No puede pagar', dni)
+        modificar_csv('cant_cuotas_elegido', None, dni)
+        modificar_csv('monto_elegido', None, dni)
     return mensaje
 
 def elegir_plan(mensaje: str, dni: str):
-    dnis = pd.read_csv(config['planilla'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int})
-    dnis.loc[dnis['DNI'] == dni, ['cant_cuotas_elegido']] = dnis.loc[dnis['DNI'] == dni, ['CANT  CUOTAS'+mensaje]]
-    dnis.loc[dnis['DNI'] == dni, ['monto_elegido']] = dnis.loc[dnis['DNI'] == dni, ['MONTON CUOTA '+mensaje]]
-    dnis.to_csv(config['planilla'], index=False)
+    modificar_csv('cant_cuotas_elegido', 'CANT  CUOTAS'+mensaje, dni)
+    modificar_csv('monto_elegido', 'MONTON CUOTA '+mensaje, dni)
     return "17"
 
 @app.post('/respuesta')
@@ -145,8 +140,7 @@ async def telefono(telefono: Telefono):
     numero_telefono = telefono.numero_telefono.strip()
     regex = r"\+54 9 (\d{4} \d{2}|\d{3} \d{3}|\d{2} \d{4})[- ]\d{4}"
     if re.fullmatch(regex, numero_telefono) is not None:
-        dnis.loc[dnis['DNI'] == telefono.dni, ['telefono']] = numero_telefono
-        dnis.to_csv(config['planilla'], index=False)
+        modificar_csv('telefono', numero_telefono, dni)
         texto = 'OK'
     else:
         texto = 'payload invalido'
