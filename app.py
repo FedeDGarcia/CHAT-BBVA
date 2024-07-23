@@ -83,20 +83,18 @@ def dame_oferta(dni: str, *args):
     return dnis[dnis['DNI'] == dni]['OFERTA'].values[0]
 
 def dame_fecha_limite(dni: str, *args):
-    cantidad_dias = 5
+    cantidad_dias = config['cantidad_dias']
     fecha_limite = pd.Timestamp(datetime.today()) + calendario_con_feriados * cantidad_dias
     return fecha_limite.date().strftime('%d/%m/%Y')
 
 def dame_planes(dni: str, *args):
-    print(dnis.dtypes)
     fila = dnis[dnis['DNI'] == dni]
     lista = list(fila[['CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3']].values[0])
     lista = list(map(lambda x: int(x[1]) if x[0] % 2 == 0 else '{0:.2f}'.format(x[1]), enumerate(lista)))
     return lista
 
 def dame_oferta_fecha(dni: str, *args):
-    fila = dnis[dnis['DNI'] == dni]
-    oferta = fila['OFERTA CANCELATORIA '].values[0]
+    oferta = dnis[dnis['DNI'] == dni]['OFERTA CANCELATORIA '].values[0]
     fecha_limite = dame_fecha_limite(dni)
     return [oferta, fecha_limite]
 

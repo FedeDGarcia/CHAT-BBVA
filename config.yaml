@@ -1,5 +1,6 @@
 planilla_entrada: variables_BBVA.xlsx
 planilla_salida: variables_BBVA.xlsx
+cantidad_dias: 5
 mensajes:
   0:
     texto: Hola! Soy Mora, el asistente virtual de CDN. ¿Me dirías tu número de DNI?
