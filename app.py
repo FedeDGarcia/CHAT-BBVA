@@ -141,7 +141,7 @@ async def telefono(telefono: Telefono):
     numero_telefono = telefono.numero_telefono.strip()
     regex = r"\+54 9 (\d{4} \d{2}|\d{3} \d{3}|\d{2} \d{4})[- ]\d{4}"
     if re.fullmatch(regex, numero_telefono) is not None:
-        modificar_csv('telefono', numero_telefono, dni)
+        modificar_csv('telefono', numero_telefono, telefono.dni)
         texto = 'OK'
     else:
         texto = 'payload invalido'
