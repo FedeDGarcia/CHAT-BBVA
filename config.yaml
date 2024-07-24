@@ -1,5 +1,5 @@
 planilla_entrada: variables_BBVA.xlsx
-planilla_salida: variables_BBVA.xlsx
+planilla_salida: variables_BBVA.csv
 cantidad_dias: 5
 feriados:
   - 2024-07-09
