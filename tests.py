@@ -133,7 +133,7 @@ class Nodo6(unittest.TestCase):
     def test_no_acepta(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.844.\nVes factible abonar este saldo?\n1) SI\n2) NO')
+        self.assertEqual(response, 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.84.\nVes factible abonar este saldo?\n1) SI\n2) NO')
 
     def test_dni_invalido(self):
         payload = {'nodo': 6, 'dni': dni_invalido, 'mensaje': '1'}
@@ -271,21 +271,21 @@ class Nodo17(unittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
 
-class Telefono(unnitest.TestCase):
+class Telefono(unittest.TestCase):
     url = 'http://localhost:3000/telefono'
     def test_telefono_valido(self):
-        payload = {'telefono': '+54 9 11 1234-5678', 'dni': dni_valido}
+        payload = {'numero_telefono': '+54 9 11 1234-5678', 'dni': dni_valido}
         response = requests.post(url, data=json.dumps(payload), headers=headers)
         self.assertEqual(response.text, 'OK')
         self.assertTrue(verificar_valor(dni_valido, 'telefono', '+54 9 11 1234-5678'))
 
     def test_telefono_invalido(self):
-        payload = {'telefono': '+54 9 11 1234sdf-5678', 'dni': dni_valido}
+        payload = {'numero_telefono': '+54 9 11 1234sdf-5678', 'dni': dni_valido}
         response = requests.post(url, data=json.dumps(payload), headers=headers)
         self.assertEqual(response.text, 'payload invalido')
 
     def test_dni_invalido(self):
-        payload = {'telefono': '+54 9 11 1234-5678', 'dni': dni_valido}
+        payload = {'numero_telefono': '+54 9 11 1234-5678', 'dni': dni_valido}
         response = requests.post(url, data=json.dumps(payload), headers=headers)
         self.assertEqual(response.text, 'payload invalido')
 
