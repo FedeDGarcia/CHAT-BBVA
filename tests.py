@@ -16,7 +16,7 @@ dni_invalido = '12345678'
 dni_valido = '43527224'
 
 def verificar_valor(dni, campo, valor_esperado):
-    df = pd.read_csv(config['planilla'], dtype={'DNI': str})
+    df = pd.read_csv(config['planilla_salida'], dtype={'DNI': str})
     return df[df['DNI'] == dni][campo].values[0] == valor_esperado
 
 def requestAPI(payload):
@@ -270,6 +270,24 @@ class Nodo17(unittest.TestCase):
         payload = {'nodo': 17, 'dni': dni_invalido, 'mensaje': '03/03/2100'}
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
+
+class Telefono(unnitest.TestCase):
+    url = 'http://localhost:3000/telefono'
+    def test_telefono_valido(self):
+        payload = {'telefono': '+54 9 11 1234-5678', 'dni': dni_valido}
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        self.assertEqual(response.text, 'OK')
+        self.assertTrue(verificar_valor(dni_valido, 'telefono', '+54 9 11 1234-5678'))
+
+    def test_telefono_invalido(self):
+        payload = {'telefono': '+54 9 11 1234sdf-5678', 'dni': dni_valido}
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        self.assertEqual(response.text, 'payload invalido')
+
+    def test_dni_invalido(self):
+        payload = {'telefono': '+54 9 11 1234-5678', 'dni': dni_valido}
+        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        self.assertEqual(response.text, 'payload invalido')
 
 if __name__ == '__main__':
     unittest.main()
