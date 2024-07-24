@@ -13,8 +13,7 @@ with open('config.yaml', 'r') as f:
     config = yaml.load(f, Loader=yaml.BaseLoader)
 
 mensajes = config['mensajes']
-dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
-feriados = ['2024-07-09', '2024-10-11']
+feriados = config['feriados']
 calendario_con_feriados = pd.offsets.CustomBusinessDay(holidays=feriados)
 
 class ActualState(BaseModel):
@@ -27,14 +26,19 @@ class Telefono(BaseModel):
     dni: str
 
 def modificar_csv(campo, valor, dni):
-    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int})
+    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
     dnis.loc[dnis['DNI'] == dni, [campo]] = valor
     dnis.to_csv(config['planilla'], index=False)
+
+def leer_xlsx(campo, dni):
+    dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
+    return dnis[dnis['DNI'] == dni][campo].values[0]
 
 def fin(parametro, *args):
     return 'fin'
 
 def verificar_dni(dni: str, *args):
+    dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
     return dni in dnis['DNI'].values
 
 def verificar_correo(correo: str, dni: str):
@@ -74,13 +78,14 @@ def verificar_fecha(fecha: str, dni: str):
         raise Exception('fecha incorrecta')
 
 def dame_deuda(dni: str, *args):
-    return dnis[dnis['DNI'] == dni]['DEUDA_TOTAL'].values[0]
+    return leer_xlsx('DEUDA_TOTAL', dni)
 
 def dame_nombre(dni: str, *args):
-    return dnis[dnis['DNI'] == dni]['NOMBRE'].values[0]
+    return leer_xlsx('NOMBRE', dni)
 
 def dame_oferta(dni: str, *args):
-    return dnis[dnis['DNI'] == dni]['OFERTA'].values[0]
+    oferta = leer_xlsx('OFERTA', dni)
+    return '{0:.2f}'.format(oferta)
 
 def dame_fecha_limite(dni: str, *args):
     cantidad_dias = config['cantidad_dias']
@@ -88,13 +93,12 @@ def dame_fecha_limite(dni: str, *args):
     return fecha_limite.date().strftime('%d/%m/%Y')
 
 def dame_planes(dni: str, *args):
-    fila = dnis[dnis['DNI'] == dni]
-    lista = list(fila[['CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3']].values[0])
+    lista = list(leer_xlsx(['CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3'], dni))
     lista = list(map(lambda x: int(x[1]) if x[0] % 2 == 0 else '{0:.2f}'.format(x[1]), enumerate(lista)))
     return lista
 
 def dame_oferta_fecha(dni: str, *args):
-    oferta = dnis[dnis['DNI'] == dni]['OFERTA CANCELATORIA '].values[0]
+    oferta = leer_xslx('OFERTA CANCELATORIA ', dni)
     fecha_limite = dame_fecha_limite(dni)
     return [oferta, fecha_limite]
 
@@ -125,7 +129,6 @@ async def respuesta(state: ActualState):
                 texto = mensajes[proximo_nodo]['texto'].format(*valor_placeholder)
             else:
                 texto = mensajes[proximo_nodo]['texto'].format(valor_placeholder)
-                print(texto)
         else:
             texto = mensajes[proximo_nodo]['texto']
     except Exception as e:
