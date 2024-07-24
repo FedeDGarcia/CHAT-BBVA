@@ -275,19 +275,19 @@ class Telefono(unittest.TestCase):
     url = 'http://localhost:3000/telefono'
     def test_telefono_valido(self):
         payload = {'numero_telefono': '+54 9 11 1234-5678', 'dni': dni_valido}
-        response = requests.post(url, data=json.dumps(payload), headers=headers)
-        self.assertEqual(response.text, 'OK')
+        response = requests.post(self.url, data=json.dumps(payload), headers=headers)
+        self.assertEqual(response.text['respuesta'], 'OK')
         self.assertTrue(verificar_valor(dni_valido, 'telefono', '+54 9 11 1234-5678'))
 
     def test_telefono_invalido(self):
         payload = {'numero_telefono': '+54 9 11 1234sdf-5678', 'dni': dni_valido}
-        response = requests.post(url, data=json.dumps(payload), headers=headers)
-        self.assertEqual(response.text, 'payload invalido')
+        response = requests.post(self.url, data=json.dumps(payload), headers=headers)
+        self.assertEqual(response.text['respuesta'], 'payload invalido')
 
     def test_dni_invalido(self):
         payload = {'numero_telefono': '+54 9 11 1234-5678', 'dni': dni_valido}
-        response = requests.post(url, data=json.dumps(payload), headers=headers)
-        self.assertEqual(response.text, 'payload invalido')
+        response = requests.post(self.url, data=json.dumps(payload), headers=headers)
+        self.assertEqual(response.text['respuesta'], 'payload invalido')
 
 if __name__ == '__main__':
     unittest.main()
