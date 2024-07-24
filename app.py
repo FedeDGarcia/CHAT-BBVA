@@ -26,6 +26,7 @@ class Telefono(BaseModel):
     dni: str
 
 def modificar_csv(campo, valor, dni):
+    print(config['planilla_salida'])
     dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
     dnis.loc[dnis['DNI'] == dni, [campo]] = valor
     dnis.to_csv(config['planilla'], index=False)
@@ -88,7 +89,7 @@ def dame_oferta(dni: str, *args):
     return '{0:.2f}'.format(oferta)
 
 def dame_fecha_limite(dni: str, *args):
-    cantidad_dias = config['cantidad_dias']
+    cantidad_dias = int(config['cantidad_dias'])
     fecha_limite = pd.Timestamp(datetime.today()) + calendario_con_feriados * cantidad_dias
     return fecha_limite.date().strftime('%d/%m/%Y')
 
