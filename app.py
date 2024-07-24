@@ -26,10 +26,9 @@ class Telefono(BaseModel):
     dni: str
 
 def modificar_csv(campo, valor, dni):
-    print(config['planilla_salida'])
     dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
     dnis.loc[dnis['DNI'] == dni, [campo]] = valor
-    dnis.to_csv(config['planilla'], index=False)
+    dnis.to_csv(config['planilla_salida'], index=False)
 
 def leer_xlsx(campo, dni):
     dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
@@ -99,7 +98,7 @@ def dame_planes(dni: str, *args):
     return lista
 
 def dame_oferta_fecha(dni: str, *args):
-    oferta = leer_xslx('OFERTA CANCELATORIA ', dni)
+    oferta = leer_xlsx('OFERTA CANCELATORIA ', dni)
     fecha_limite = dame_fecha_limite(dni)
     return [oferta, fecha_limite]
 
@@ -141,7 +140,7 @@ async def respuesta(state: ActualState):
 async def telefono(telefono: Telefono):
     numero_telefono = telefono.numero_telefono.strip()
     regex = r"\+54 9 (\d{4} \d{2}|\d{3} \d{3}|\d{2} \d{4})[- ]\d{4}"
-    if re.fullmatch(regex, numero_telefono) is not None:
+    if re.fullmatch(regex, numero_telefono) is not None and verificar_dni(telefono.dni):
         modificar_csv('telefono', numero_telefono, telefono.dni)
         texto = 'OK'
     else:
