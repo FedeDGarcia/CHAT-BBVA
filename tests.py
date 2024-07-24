@@ -242,7 +242,7 @@ class Nodo15(unittest.TestCase):
         self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 6010.64))
 
     def test_dni_invalido(self):
-        payload = {'nodo': 15, 'dni': dni_invalido, 'mensaje': '03/03/2100'}
+        payload = {'nodo': 15, 'dni': dni_invalido, 'mensaje': '1'}
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
 
