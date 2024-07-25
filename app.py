@@ -134,7 +134,8 @@ async def respuesta(state: ActualState):
     except Exception as e:
         print(e)
         texto = 'payload invalido'
-    return {"respuesta": texto}
+        proximo_nodo = -1
+    return {"respuesta": texto, "nodo": proximo_nodo}
 
 @app.post('/telefono')
 async def telefono(telefono: Telefono):
