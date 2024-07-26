@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi import File, UploadFile
 from pydantic import BaseModel
 from typing import Optional
 import uvicorn
@@ -143,6 +144,22 @@ async def telefono(telefono: Telefono):
     regex = r"\+54 9 (\d{4} \d{2}|\d{3} \d{3}|\d{2} \d{4})[- ]\d{4}"
     if re.fullmatch(regex, numero_telefono) is not None and verificar_dni(telefono.dni):
         modificar_csv('telefono', numero_telefono, telefono.dni)
+        texto = 'OK'
+    else:
+        texto = 'payload invalido'
+    return {'respuesta': texto}
+
+@app.post('/subir_xlsx')
+async def subir_planilla(file: UploadFile = File(...)):
+    if file.content_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+        contents = file.file.read()
+        with open(config['planilla_entrada'], 'wb') as f:
+            f.write(contents)
+        df = pd.read_excel(config['planilla_entrada'])
+        df['fecha_de_pago'] = None
+        df['cant_cuotas_elegido'] = None
+        df['monto_elegido'] = None
+        df.to_csv(config['planilla_salida'], index=False)
         texto = 'OK'
     else:
         texto = 'payload invalido'
