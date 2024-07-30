@@ -151,7 +151,9 @@ async def telefono(telefono: Telefono):
 
 @app.post('/subir_xlsx')
 async def subir_planilla(file: UploadFile = File(...)):
-    if file.content_type == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+    try:
+        if file.content_type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
+            raise Exception('Bad content type, must be application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
         contents = file.file.read()
         with open(config['planilla_entrada'], 'wb') as f:
             f.write(contents)
@@ -163,8 +165,8 @@ async def subir_planilla(file: UploadFile = File(...)):
         df['monto_elegido'] = None
         df.to_csv(config['planilla_salida'], index=False)
         texto = 'OK'
-    else:
-        texto = 'payload invalido'
+    except Exception as e:
+        texto = f"payload invalido, {e}"
     return {'respuesta': texto}
 
 if __name__ == '__main__':
