@@ -156,6 +156,8 @@ async def subir_planilla(file: UploadFile = File(...)):
         with open(config['planilla_entrada'], 'wb') as f:
             f.write(contents)
         df = pd.read_excel(config['planilla_entrada'])
+        df = df.dropna(subset=['DNI', 'ESTADO', 'DEUDA_TOTAL', 'NOMBRE', 'OFERTA', 'CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3', 'OFERTA CANCELATORIA '])
+        df.to_excel(config['planilla_entrada'], index=False)
         df['fecha_de_pago'] = None
         df['cant_cuotas_elegido'] = None
         df['monto_elegido'] = None
