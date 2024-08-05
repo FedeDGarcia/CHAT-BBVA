@@ -85,7 +85,7 @@ def dame_nombre(dni: str, *args):
     return leer_xlsx('NOMBRE', dni)
 
 def dame_oferta(dni: str, *args):
-    oferta = leer_xlsx('OFERTA', dni)
+    oferta = leer_xlsx('OFERTA CANCELATORIA ', dni)
     return '{0:.2f}'.format(oferta)
 
 def dame_fecha_limite(dni: str, *args):
@@ -100,6 +100,7 @@ def dame_planes(dni: str, *args):
 
 def dame_oferta_fecha(dni: str, *args):
     oferta = leer_xlsx('OFERTA CANCELATORIA ', dni)
+    oferta = '{0:.2f}'.format(oferta)
     fecha_limite = dame_fecha_limite(dni)
     return [oferta, fecha_limite]
 
@@ -158,7 +159,7 @@ async def subir_planilla(file: UploadFile = File(...)):
         with open(config['planilla_entrada'], 'wb') as f:
             f.write(contents)
         df = pd.read_excel(config['planilla_entrada'])
-        df = df.dropna(subset=['DNI', 'ESTADO', 'DEUDA_TOTAL', 'NOMBRE', 'OFERTA', 'CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3', 'OFERTA CANCELATORIA '])
+        df = df.dropna(subset=['DNI', 'ESTADO', 'DEUDA_TOTAL', 'NOMBRE', 'CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3', 'OFERTA CANCELATORIA '])
         df.to_excel(config['planilla_entrada'], index=False)
         df['fecha_de_pago'] = None
         df['cant_cuotas_elegido'] = None
