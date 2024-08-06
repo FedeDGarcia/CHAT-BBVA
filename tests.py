@@ -35,14 +35,14 @@ class Nodo0(unittest.TestCase):
     def test_dni_invalido(self):
         payload = {'nodo': 0, 'mensaje': dni_invalido, 'dni': dni_invalido}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Hoy no tenemos asignada una deuda con tu número de DNI. Indicanos por favor el número de DNI DEL TITULAR DE LA CUENTA')
+        self.assertEqual(response[0], 'Hoy no tenemos asignada una deuda con tu número de DNI...\n Indicanos por favor el número de DNI DEL TITULAR DE LA CUENTA')
         self.assertEqual(response[1], 1)
 
 class Nodo1(unittest.TestCase):
     def test_dni_valido(self):
         payload = {'nodo': 1, 'mensaje': dni_valido, 'dni': dni_valido}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'URO ROCIO MARCELA Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
+        self.assertEqual(response[0], 'URO ROCIO MARCELA Un gusto saludarte!\n Te pedimos que nos facilites un correo electrónico para continuar con la gestión')
         self.assertEqual(response[1], 3)
 
     def test_dni_invalido(self):
@@ -62,7 +62,7 @@ class Nodo3(unittest.TestCase):
     def test_mail_valido(self):
         payload = {'nodo': 3, 'mensaje': 'prueba@gmail.com', 'dni': dni_valido}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Muchas gracias! Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n1) Ya pague\n2) Quiero conocer mis opciones de pago\n3) Libre deuda\n4) Defensa del consumidor\n5) Desconozco deuda/No tengo deuda con BBVA')
+        self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
         self.assertEqual(response[1], 4)
         self.assertTrue(verificar_valor(dni_valido, 'MAIL2', 'prueba@gmail.com'))
 
@@ -72,37 +72,67 @@ class Nodo3(unittest.TestCase):
         self.assertEqual(response[0], 'payload invalido')
         self.assertEqual(response[1], -1)
 
+    def test_no_tiene_mail(self):
+        payload = {'nodo': 3, 'mensaje': 'No tengo mail', 'dni': dni_valido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
+        self.assertEqual(response[1], 4)
+        payload = {'nodo': 3, 'mensaje': 'No tengo correo electronico', 'dni': dni_valido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
+        self.assertEqual(response[1], 4)
+
+    def test_no_usa_mail(self):
+        payload = {'nodo': 3, 'mensaje': 'No uso mail', 'dni': dni_valido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
+        self.assertEqual(response[1], 4)
+        payload = {'nodo': 3, 'mensaje': 'No uso correo electronico', 'dni': dni_valido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
+        self.assertEqual(response[1], 4)
+
+    def test_no_recuerda_correo(self):
+        payload = {'nodo': 3, 'mensaje': 'No lo recuerdo', 'dni': dni_valido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
+        self.assertEqual(response[1], 4)
+        payload = {'nodo': 3, 'mensaje': 'No me acuerdo', 'dni': dni_valido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
+        self.assertEqual(response[1], 4)
+
 class Nodo4(unittest.TestCase):
     def test_pago(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, te pedimos que nos indiques la fecha de pago EJ: 01/03/2024 y nos envíes el archivo adjunto del comprobante para poder registrarlo')
+        self.assertEqual(response[0], 'Perfecto, te pedimos  que nos indiques la fecha de pago EJ: 01/03/2024\nY nos envies el archivo adjunto del comprobante para poder registrarlo')
         self.assertEqual(response[1], 5)
 
     def test_opciones_pago(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria, cancelás por $15026.59613. ¿Ves factible abonar esto al 31/07/2024?\n1) SI\n2) NO')
+        self.assertEqual(response[0], 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria , cancelás por $15026.59613 ¿Ves factible abonar esto al 31/07/2024?\n1) SI\n2) NO')
         self.assertEqual(response[1], 6)
 
     def test_libre_deuda(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '3'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Para solicitar el libre deuda podés acercarte a la sucursal más cercana o comunicarse al 0800-999-2282 de lunes a viernes de 10 a 15 hs. Muchas gracias')
+        self.assertEqual(response[0], 'Para solicitar el LIBRE DEUDA  podés acercarte a la sucursal más cercana o comunicarse al 0800-999-2282 de Lunes a Viernes de 10 a 15 hs\nMuchas gracias')
         self.assertEqual(response[1], 7)
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'LIBRE DEUDA'))
 
     def test_defensa_consumidor(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '4'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Estimado/a te va a estar llamando a la brevedad el asesor designado a tu legajo en el horario de 9 a 17 hs. Saludos!')
+        self.assertEqual(response[0], 'Estimado/a te va estar llamando a la brevedad el asesor designado a tu legajo en el horario de 9 a 17 hs.\n¡Saludos!')
         self.assertEqual(response[1], 8)
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'DEFENSA DEL CONSUMIDOR'))
 
     def test_desconozco_deuda(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '5'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Como desconoces la deuda, en breves un asesor se comunicará y te dará más detalles. Recordá que nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059. Muchas gracias')
+        self.assertEqual(response[0], 'Como desconoces la deuda, en breves un asesor se comunicará y  te dará más detalles.\nRecordá que nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podes contactar con nosotros al 0800 220 0059.\nMuchas gracias')
         self.assertEqual(response[1], 9)
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'DESCONOCE DEUDA'))
 
@@ -147,7 +177,7 @@ class Nodo6(unittest.TestCase):
     def test_acepta(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 31/07/2024. ¿Confirma?\n  1) SI\n  2) NO')
+        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 31/07/2024. ¿Confirma?\n 1) SI\n 2) NO')
         self.assertEqual(response[1], 11)
 
     def test_no_acepta(self):
@@ -161,6 +191,48 @@ class Nodo6(unittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response, 'payload invalido')
         self.assertEqual(response[1], -1)
+
+    def test_pide_cuotas(self):
+        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Necesito cuotas'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.84.\nVes factible abonar este saldo?\n1) SI\n2) NO')
+        self.assertEqual(response[1], 12)
+        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Necesito un plan de pagos'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.84.\nVes factible abonar este saldo?\n1) SI\n2) NO')
+        self.assertEqual(response[1], 12)
+        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Plan en cuotas'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.84.\nVes factible abonar este saldo?\n1) SI\n2) NO')
+        self.assertEqual(response[1], 12)
+        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Cuotas'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.84.\nVes factible abonar este saldo?\n1) SI\n2) NO')
+        self.assertEqual(response[1], 12)
+
+    def test_pide_refinanciacion(self):
+        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Necesito refinanciar'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.84.\nVes factible abonar este saldo?\n1) SI\n2) NO')
+        self.assertEqual(response[1], 12)
+        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Quiero refinanciar'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.84.\nVes factible abonar este saldo?\n1) SI\n2) NO')
+        self.assertEqual(response[1], 12)
+        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Refinanciacion'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.84.\nVes factible abonar este saldo?\n1) SI\n2) NO')
+        self.assertEqual(response[1], 12)
+
+    def test_pide_otras(self):
+        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Acuerdo'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.84.\nVes factible abonar este saldo?\n1) SI\n2) NO')
+        self.assertEqual(response[1], 12)
+        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'A cuenta'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por $5080.84.\nVes factible abonar este saldo?\n1) SI\n2) NO')
+        self.assertEqual(response[1], 12)
 
 class Nodo7(unittest.TestCase):
     def test_terminar(self):
@@ -283,6 +355,24 @@ class Nodo15(unittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response[0], 'payload invalido')
         self.assertEqual(response[1], -1)
+
+    def test_rechaza_cuotas(self):
+        payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'No me sirven esas cuotas'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], 16)
+        payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'Necesito mas cuotas'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], 16)
+        payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'No puedo pagar en esa fecha'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], 16)
+        payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'No puedo pagar esos montos'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un correo electrónico para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podés contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], 16)
 
 class Nodo16(unittest.TestCase):
     def test_terminar(self):
