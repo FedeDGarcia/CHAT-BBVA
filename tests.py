@@ -56,7 +56,7 @@ class Nodo2(unittest.TestCase):
         payload = {'nodo': 2, 'mensaje': 'blabla', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Conversación terminada')
-        self.assertEqual(response[1], 18)
+        self.assertEqual(response[1], '18')
 
 class Nodo3(unittest.TestCase):
     def test_mail_valido(self):
