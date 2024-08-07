@@ -29,7 +29,7 @@ class Nodo0(unittest.TestCase):
     def test_dni_valido(self):
         payload = {'nodo': 0, 'mensaje': dni_valido, 'dni': dni_valido}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'URO ROCIO MARCELA Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión')
+        self.assertEqual(response[0], 'URO ROCIO MARCELA Un gusto saludarte!\nTe pedimos que nos facilites un correo electrónico para continuar con la gestión')
         self.assertEqual(response[1], '3')
 
     def test_dni_invalido(self):
@@ -42,14 +42,14 @@ class Nodo1(unittest.TestCase):
     def test_dni_valido(self):
         payload = {'nodo': 1, 'mensaje': dni_valido, 'dni': dni_valido}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'URO ROCIO MARCELA Un gusto saludarte!\n Te pedimos que nos facilites un correo electrónico para continuar con la gestión')
-        self.assertEqual(response[1], 3)
+        self.assertEqual(response[0], 'URO ROCIO MARCELA Un gusto saludarte!\nTe pedimos que nos facilites un correo electrónico para continuar con la gestión')
+        self.assertEqual(response[1], '3')
 
     def test_dni_invalido(self):
         payload = {'nodo': 1, 'mensaje': dni_invalido, 'dni': dni_invalido}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Al momento en CDN no tenemos asignada tu deuda, por favor contactate con BBVA al 0800-999-2282 DE LUNES A VIERNES DE 10 A 15 HS')
-        self.assertEqual(response[1], 2)
+        self.assertEqual(response[1], '2')
 
 class Nodo2(unittest.TestCase):
     def test_terminar(self):

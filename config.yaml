@@ -28,7 +28,9 @@ mensajes:
       resultados:
         fin: 18
   3:
-    texto: "{0} Un gusto saludarte! Te pedimos que nos facilites un correo electrónico para continuar la gestión"
+    texto: |-
+      {0} Un gusto saludarte!
+      Te pedimos que nos facilites un correo electrónico para continuar con la gestión
     funcion: dame_nombre
     siguientes:
       funcion: verificar_correo
