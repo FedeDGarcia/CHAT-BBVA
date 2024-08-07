@@ -239,21 +239,21 @@ class Nodo7(unittest.TestCase):
         payload = {'nodo': 7, 'mensaje': 'blabla', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Conversación terminada')
-        self.assertEqual(response[1], 18)
+        self.assertEqual(response[1], '18')
 
 class Nodo8(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 8, 'mensaje': 'blabla', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Conversación terminada')
-        self.assertEqual(response[1], 18)
+        self.assertEqual(response[1], '18')
 
 class Nodo9(unittest.TestCase):
     def test_terminar(self):
         payload = {'nodo': 9, 'mensaje': 'blabla', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Conversación terminada')
-        self.assertEqual(response[1], 18)
+        self.assertEqual(response[1], '18')
 
 class Nodo10(unittest.TestCase):
     def test_terminar(self):
