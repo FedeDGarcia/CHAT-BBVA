@@ -121,28 +121,30 @@ mensajes:
         2: 15
   13:
     texto: |-
-      Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envío del convenio.
+      Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envio del convenio.
       El importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:
-      Te brindamos el paso a paso de como debés realizarlo en un cajero automático:
-      1º PAGOS
-      2º RECAUDACIONES
-      3º EFECTIVO EN PESOS
-      4º CODIGO DE SERVICIO: 4482
-      5º NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.
-      6º TOTAL A PAGAR: (Valor primera cuota)
-      7º PARA TRANSFERENCIA A ICHTHYS S.R.L. (Razón social)
-      NUMERO: 331-422456/6 CUIT: 30715141627 CBU: 0170331120000042245663
-      Una vez que realices el pago por favor enviá el comprobante por:
-      whatsapp: wa.link/bbva_estudiocdn
-      email: cdncobranzas@companiadelnorte.com
-      Nuestro horario de recepción es de lunes a viernes de 9 a 17:30 hs o bien te podes contactar con nosotros al 0800 220 0059.
+      Te brindamos el paso a paso de como debes realizarlo en un cajero automático:
+      1° PAGOS
+      2° RECAUDACIONES
+      3° EFECTIVO EN PESOS
+      4° CODIGO DE SERVICIO: 4482
+      5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.
+      6° TOTAL A PAGAR: (Valor primera cuota)
+      7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)
+      NUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663
+      Una vez que realices el pago por favor envia el comprobante por:
+      Whatsapp: wa.link/bbva_estudiocdn
+      Email:
+      cdncobranzas@companiadelnorte.com
+      Nuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs
+      o bien te podes contactar con nosotros al 0800 220 0059
       Saludos.
     siguientes:
       funcion: fin
       resultados:
         fin: 18
   14:
-    texto: "Indicanos en que fecha ves factible abonar tu deuda con BBVA en el siguiente formato EJ: 02/03/2024"
+    texto: "Indicanos en que fecha ves factible abonar tu deuda con BBVA en el siguiente formato\nEJ: 02/03/2024."
     siguientes:
       funcion: verificar_fecha
       resultados:
