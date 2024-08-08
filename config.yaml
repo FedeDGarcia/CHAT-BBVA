@@ -68,10 +68,19 @@ mensajes:
       2) NO
     funcion: dame_oferta_fecha
     siguientes:
-      funcion: "lambda x, y: x"
+      funcion: "lambda x, y: x.lower()"
       resultados:
         1: 11
         2: 12
+        necesito refinanciar: 12
+        quiero refinanciar: 12
+        refinanciacion: 12
+        acuerdo: 12
+        a cuenta: 12
+        necesito cuotas: 12
+        necesito un plan de pagos: 12
+        plan en cuotas: 12
+        cuotas: 12
   7:
     texto: Para solicitar el libre deuda podés acercarte a la sucursal más cercana o comunicarse al 0800-999-2282 de lunes a viernes de 10 a 15 hs. Muchas gracias
     siguientes:
@@ -99,8 +108,8 @@ mensajes:
   11:
     texto: |-
       Perfecto, entonces el pago deberá realizarse antes de {0}. ¿Confirma?
-        1) SI
-        2) NO
+      1) SI
+      2) NO
     funcion: dame_fecha_limite
     siguientes:
       funcion: "lambda x, y: x"
@@ -109,8 +118,9 @@ mensajes:
         2: 14
   12:
     texto: |-
-      Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes y honorarios por la operación. Podemos ofrecerte un plan de pagos CON HASTA 50 % OFF. Abonando hoy cancelás tu deuda por ${0}.
-      Ves factible abonar este saldo?
+      Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.
+      Podemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF
+      ¿Te interesaría conocer nuestras propuestas?
       1) SI
       2) NO
     funcion: dame_oferta

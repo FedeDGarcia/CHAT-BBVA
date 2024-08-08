@@ -154,7 +154,7 @@ class Nodo5(unittest.TestCase):
         payload = {'nodo': 5, 'dni': dni_valido, 'mensaje': fecha_hoy}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Muchas gracias por enviarnos el comprobante de pago, en las proximas 48 hs impactará en su cuenta')
-        self.assertEqual(response[1], 10)
+        self.assertEqual(response[1], '10')
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Ya pagó'))
 
     def test_otro_mes(self):
@@ -174,65 +174,66 @@ class Nodo5(unittest.TestCase):
         self.assertEqual(response[1], -1)
 
 class Nodo6(unittest.TestCase):
+    maxDiff = None
     def test_acepta(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 31/07/2024. ¿Confirma?\n 1) SI\n 2) NO')
-        self.assertEqual(response[1], 11)
+        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 15/08/2024. ¿Confirma?\n1) SI\n2) NO')
+        self.assertEqual(response[1], '11')
 
     def test_no_acepta(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
-        self.assertEqual(response[1], 12)
-
-    def test_dni_invalido(self):
-        payload = {'nodo': 6, 'dni': dni_invalido, 'mensaje': '1'}
-        response = requestAPI(payload)
-        self.assertEqual(response, 'payload invalido')
-        self.assertEqual(response[1], -1)
+        self.assertEqual(response[1], '12')
 
     def test_pide_cuotas(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Necesito cuotas'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
-        self.assertEqual(response[1], 12)
+        self.assertEqual(response[1], '12')
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Necesito un plan de pagos'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
-        self.assertEqual(response[1], 12)
+        self.assertEqual(response[1], '12')
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Plan en cuotas'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
-        self.assertEqual(response[1], 12)
+        self.assertEqual(response[1], '12')
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Cuotas'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
-        self.assertEqual(response[1], 12)
+        self.assertEqual(response[1], '12')
 
     def test_pide_refinanciacion(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Necesito refinanciar'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
-        self.assertEqual(response[1], 12)
+        self.assertEqual(response[1], '12')
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Quiero refinanciar'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
-        self.assertEqual(response[1], 12)
+        self.assertEqual(response[1], '12')
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Refinanciacion'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
-        self.assertEqual(response[1], 12)
+        self.assertEqual(response[1], '12')
 
     def test_pide_otras(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Acuerdo'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
-        self.assertEqual(response[1], 12)
+        self.assertEqual(response[1], '12')
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'A cuenta'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
-        self.assertEqual(response[1], 12)
+        self.assertEqual(response[1], '12')
+
+    def test_dni_invalido(self):
+        payload = {'nodo': 6, 'dni': dni_invalido, 'mensaje': '1'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'payload invalido')
+        self.assertEqual(response[1], -1)
 
 class Nodo7(unittest.TestCase):
     def test_terminar(self):
