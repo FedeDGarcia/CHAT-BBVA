@@ -63,7 +63,7 @@ class Nodo3(unittest.TestCase):
         payload = {'nodo': 3, 'mensaje': 'prueba@gmail.com', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
-        self.assertEqual(response[1], 4)
+        self.assertEqual(response[1], '4')
         self.assertTrue(verificar_valor(dni_valido, 'MAIL2', 'prueba@gmail.com'))
 
     def test_mail_invalido(self):
@@ -76,31 +76,31 @@ class Nodo3(unittest.TestCase):
         payload = {'nodo': 3, 'mensaje': 'No tengo mail', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
-        self.assertEqual(response[1], 4)
+        self.assertEqual(response[1], '4')
         payload = {'nodo': 3, 'mensaje': 'No tengo correo electronico', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
-        self.assertEqual(response[1], 4)
+        self.assertEqual(response[1], '4')
 
     def test_no_usa_mail(self):
         payload = {'nodo': 3, 'mensaje': 'No uso mail', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
-        self.assertEqual(response[1], 4)
+        self.assertEqual(response[1], '4')
         payload = {'nodo': 3, 'mensaje': 'No uso correo electronico', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
-        self.assertEqual(response[1], 4)
+        self.assertEqual(response[1], '4')
 
     def test_no_recuerda_correo(self):
         payload = {'nodo': 3, 'mensaje': 'No lo recuerdo', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
-        self.assertEqual(response[1], 4)
+        self.assertEqual(response[1], '4')
         payload = {'nodo': 3, 'mensaje': 'No me acuerdo', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
-        self.assertEqual(response[1], 4)
+        self.assertEqual(response[1], '4')
 
 class Nodo4(unittest.TestCase):
     maxDiff = None

@@ -39,12 +39,13 @@ mensajes:
         False: 3
   4:
     texto: |-
-        Muchas gracias! Te contamos que a la fecha estás en mora por un importe de ${0}. Para poder ayudarte, decime el motivo de tu contacto
-        1) Ya pague
-        2) Quiero conocer mis opciones de pago
-        3) Libre deuda
-        4) Defensa del consumidor
-        5) Desconozco deuda/No tengo deuda con BBVA
+        ¡Muchas gracias!
+         Te contamos que a la fecha estás en mora por un importe de ${0}. Para poder ayudarte, decime el motivo de tu contacto
+         1) YA PAGUE
+         2) QUIERO CONOCER MIS OPCIONES DE PAGO
+         3) LIBRE DEUDA
+         4) DEFENSA DEL CONSUMIDOR
+         5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA
     funcion: dame_deuda
     siguientes:
       funcion: verificar_estado

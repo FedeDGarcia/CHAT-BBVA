@@ -44,11 +44,14 @@ def verificar_dni(dni: str, *args):
 
 def verificar_correo(correo: str, dni: str):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-    if re.fullmatch(regex, correo) is None:
+    if correo.lower() in ['no tengo mail', 'no tengo correo electronico', 'no uso mail', 'no uso correo electronico', 'no lo recuerdo', 'no me acuerdo']:
+        respuesta = True
+    elif re.fullmatch(regex, correo) is None:
         raise Exception('mail invalido')
     else:
         modificar_csv('MAIL2', correo, dni)
-        return True
+        respuesta = True
+    return respuesta
 
 def verificar_estado(opcion :str, dni:str):
     estado = None
