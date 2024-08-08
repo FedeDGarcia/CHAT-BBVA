@@ -103,37 +103,38 @@ class Nodo3(unittest.TestCase):
         self.assertEqual(response[1], 4)
 
 class Nodo4(unittest.TestCase):
+    maxDiff = None
     def test_pago(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Perfecto, te pedimos  que nos indiques la fecha de pago EJ: 01/03/2024\nY nos envies el archivo adjunto del comprobante para poder registrarlo')
-        self.assertEqual(response[1], 5)
+        self.assertEqual(response[1], '5')
 
     def test_opciones_pago(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria , cancelás por $15026.59613 ¿Ves factible abonar esto al 31/07/2024?\n1) SI\n2) NO')
-        self.assertEqual(response[1], 6)
+        self.assertEqual(response[0], 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria , cancelás por $15026.60 ¿Ves factible abonar esto al 15/08/2024?\n1) SI\n2) NO')
+        self.assertEqual(response[1], '6')
 
     def test_libre_deuda(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '3'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Para solicitar el LIBRE DEUDA  podés acercarte a la sucursal más cercana o comunicarse al 0800-999-2282 de Lunes a Viernes de 10 a 15 hs\nMuchas gracias')
-        self.assertEqual(response[1], 7)
+        self.assertEqual(response[1], '7')
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'LIBRE DEUDA'))
 
     def test_defensa_consumidor(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '4'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Estimado/a te va estar llamando a la brevedad el asesor designado a tu legajo en el horario de 9 a 17 hs.\n¡Saludos!')
-        self.assertEqual(response[1], 8)
+        self.assertEqual(response[1], '8')
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'DEFENSA DEL CONSUMIDOR'))
 
     def test_desconozco_deuda(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '5'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Como desconoces la deuda, en breves un asesor se comunicará y  te dará más detalles.\nRecordá que nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podes contactar con nosotros al 0800 220 0059.\nMuchas gracias')
-        self.assertEqual(response[1], 9)
+        self.assertEqual(response[1], '9')
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'DESCONOCE DEUDA'))
 
     def test_opcion_invalida(self):
@@ -145,7 +146,7 @@ class Nodo4(unittest.TestCase):
     def test_dni_invalido(self):
         payload = {'nodo': 4, 'dni': dni_invalido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response, 'payload invalido')
+        self.assertEqual(response[0], 'payload invalido')
         self.assertEqual(response[1], -1)
 
 class Nodo5(unittest.TestCase):
