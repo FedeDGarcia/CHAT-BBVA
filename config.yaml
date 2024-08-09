@@ -122,10 +122,10 @@ mensajes:
       2) NO
     funcion: dame_fecha_limite
     siguientes:
-      funcion: "lambda x, y: x"
+      funcion: verificar_fecha
       resultados:
-        1: 13
-        2: 14
+        True: 13
+        False: 14
   12:
     texto: |-
       Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.
@@ -172,10 +172,12 @@ mensajes:
         False: 16
   15:
     texto: |-
-      Entendemos que este no es un monto viable para vos para cancelar tu deuda. Desde CDN te podemos ofrecer las siguientes opciones de pago ¡Elegí la que más te convenga!
-      1) Cancelas por {0} DE ${1}
-      2) Cancelas por {2} DE ${3}
-      3) Cancelas por {4} DE ${5}
+      Entendemos que este no es un monto viable para vos para cancelar tu deuda.
+      Desde CDN te podemos ofrecer las siguientes opciones de pago.
+      ¡Elegi la opción que más te convenga!
+      1) Cancelas por {0}  DE $ {1}.
+      2) Cancelas por {2}  DE $ {3}.
+      3) Cancelas por {4}  DE $ {5}.
     funcion: dame_planes
     siguientes:
       funcion: elegir_plan

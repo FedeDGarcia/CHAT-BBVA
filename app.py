@@ -74,6 +74,10 @@ def verificar_mes_actual(fecha: str, dni: str):
         raise Exception('mes incorrecto')
 
 def verificar_fecha(fecha: str, dni: str):
+    if fecha == '1':
+        fecha = dame_fecha_limite(dni)
+    elif fecha == '2':
+        return False
     fecha_formateada = datetime.strptime(fecha, '%d/%m/%Y')
     if fecha_formateada > datetime.today():
         modificar_csv('fecha_de_pago', fecha, dni)

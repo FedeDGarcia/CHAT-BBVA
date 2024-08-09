@@ -175,7 +175,6 @@ class Nodo5(unittest.TestCase):
         self.assertEqual(response[1], -1)
 
 class Nodo6(unittest.TestCase):
-    maxDiff = None
     def test_acepta(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
@@ -270,7 +269,7 @@ class Nodo11(unittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envio del convenio.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
-        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '13/08/2024'))
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '16/08/2024'))
 
     def test_no_confirma(self):
         payload = {'nodo': 11, 'dni': dni_valido, 'mensaje': '2'}
@@ -285,10 +284,11 @@ class Nodo11(unittest.TestCase):
         self.assertEqual(response[1], -1)
 
 class Nodo12(unittest.TestCase):
+    maxDiff = None
     def test_quiere_conocer_cuotas(self):
         payload = {'nodo': 12, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Entendemos que este no es un monto viable para vos para cancelar tu deuda.\nDesde CDN te podemos ofrecer las siguientes opciones de pago.\n¡Elegi la opción que más te convenga!\nA) Cancelas por (VARIABLE CANT CUOTAS 1)  DE $ (VARIABLE MONTO CUOTA 1).\nB) Cancelas por (VARIABLE CANT CUOTAS 2)  DE $ (VARIABLE MONTO CUOTA 2).\nC) Cancelas por (VARIABLE CANT CUOTAS 3) DE $ (VARIABLE MONTO CUOTA 3).')
+        self.assertEqual(response[0], 'Entendemos que este no es un monto viable para vos para cancelar tu deuda.\nDesde CDN te podemos ofrecer las siguientes opciones de pago.\n¡Elegi la opción que más te convenga!\n1) Cancelas por 2  DE $ 6010.64.\n2) Cancelas por 3  DE $ 3506.21.\n3) Cancelas por 3  DE $ 4507.98.')
         self.assertEqual(response[1], '15')
 
     def test_no_quiere_cuotas(self):
@@ -397,7 +397,6 @@ class Nodo16(unittest.TestCase):
         self.assertEqual(response[1], -1)
 
 class Nodo17(unittest.TestCase):
-    maxDiff = None
     def test_confirma(self):
         payload = {'nodo': 17, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
