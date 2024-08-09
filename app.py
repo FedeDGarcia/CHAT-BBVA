@@ -114,7 +114,7 @@ def dame_oferta_fecha(dni: str, *args):
 
 def confirma_pago(mensaje: str, dni: str):
     if mensaje == "1":
-        fecha_pago = dame_fecha_limite(dni)
+        fecha_limite = dame_fecha_limite(dni)
         modificar_csv('fecha_de_pago', fecha_limite, dni)
         modificar_csv('ESTADO', 'Compromete fecha', dni)
     if mensaje == "2":
@@ -125,7 +125,7 @@ def confirma_pago(mensaje: str, dni: str):
 
 def elegir_plan(mensaje: str, dni: str):
     if mensaje in ['1', '2', '3']:
-        modificar_csv('cant_cuotas_elegido', leer_xlsx('CANT  CUOTAS'+mensaje, dni), dni)
+        modificar_csv('cant_cuotas_elegido', leer_xlsx('CANT  CUOTAS '+mensaje, dni), dni)
         modificar_csv('monto_elegido', leer_xlsx('MONTON CUOTA '+mensaje, dni), dni)
         return "17"
     elif mensaje.lower() in ['no me sirven esas cuotas', 'necesito mas cuotas', 'no puedo pagar en esa fecha', 'no puedo pagar esos montos']:
@@ -137,7 +137,7 @@ def modificar_telefono(numero_telefono, dni, campo='telefono2'):
         modificar_csv(campo, numero_telefono, dni)
         return True
     else:
-        raise Exception('Telefono invallido')
+        raise Exception('Telefono invalido')
 
 @app.post('/respuesta')
 async def respuesta(state: ActualState):

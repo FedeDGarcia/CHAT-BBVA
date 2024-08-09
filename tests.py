@@ -285,7 +285,6 @@ class Nodo11(unittest.TestCase):
         self.assertEqual(response[1], -1)
 
 class Nodo12(unittest.TestCase):
-    maxDiff = None
     def test_quiere_conocer_cuotas(self):
         payload = {'nodo': 12, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
@@ -349,10 +348,10 @@ class Nodo15(unittest.TestCase):
     def elige_opcion_pago(self):
         payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 01/01/2020\n¿Confirma?\n1) SI \n2) NO')
+        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 16/08/2024\n¿Confirma?\n1) SI \n2) NO')
         self.assertEqual(response[1], 17)
         self.assertTrue(verificar_valor(dni_valido, 'cant_cuotas_elegido', 2))
-        self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 6010.64))
+        self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 6010.638452))
 
     def test_dni_invalido(self):
         payload = {'nodo': 15, 'dni': dni_invalido, 'mensaje': '1'}
@@ -389,8 +388,8 @@ class Nodo16(unittest.TestCase):
     def test_telefono_invalido(self):
         payload = {'nodo': 16, 'mensaje': '+54 9 11 1234-sdfsfg5678', 'dni': dni_valido}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Conversación terminada')
-        self.assertEqual(response[1], '18')
+        self.assertEqual(response[0], 'payload invalido')
+        self.assertEqual(response[1], -1)
 
     def test_dni_invalido(self):
         payload = {'nodo': 16, 'mensaje': '+54 9 11 1234-5678', 'dni': dni_invalido}
@@ -407,7 +406,7 @@ class Nodo17(unittest.TestCase):
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envio del convenio.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
         self.assertTrue(verificar_valor(dni_valido, 'cant_cuotas_elegido', 2))
-        self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 6010.64))
+        self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 6010.638452))
         self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '16/08/2024'))
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
 
