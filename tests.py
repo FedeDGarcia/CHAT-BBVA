@@ -270,6 +270,7 @@ class Nodo11(unittest.TestCase):
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envio del convenio.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
         self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '16/08/2024'))
+        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
 
     def test_no_confirma(self):
         payload = {'nodo': 11, 'dni': dni_valido, 'mensaje': '2'}
@@ -330,6 +331,7 @@ class Nodo14(unittest.TestCase):
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envio del convenio.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
         self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', fecha_futura))
+        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
 
     def test_fecha_mal_formateada(self):
         payload = {'nodo': 14, 'dni': dni_valido, 'mensaje': '2100-02-02'}
@@ -398,11 +400,16 @@ class Nodo16(unittest.TestCase):
 
 class Nodo17(unittest.TestCase):
     def test_confirma(self):
+        payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': '1'}
+        response = requestAPI(payload)
         payload = {'nodo': 17, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envio del convenio.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
-        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '20/04/2027'))
+        self.assertTrue(verificar_valor(dni_valido, 'cant_cuotas_elegido', 2))
+        self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 6010.64))
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '16/08/2024'))
+        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
 
     def test_no_confirma(self):
         payload = {'nodo': 17, 'dni': dni_valido, 'mensaje': '2'}

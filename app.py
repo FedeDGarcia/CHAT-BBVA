@@ -81,6 +81,7 @@ def verificar_fecha(fecha: str, dni: str):
     fecha_formateada = datetime.strptime(fecha, '%d/%m/%Y')
     if fecha_formateada > datetime.today():
         modificar_csv('fecha_de_pago', fecha, dni)
+        modificar_csv('ESTADO', 'Compromete fecha', dni)
         return True
     else:
         raise Exception('fecha incorrecta')
@@ -112,6 +113,10 @@ def dame_oferta_fecha(dni: str, *args):
     return [oferta, fecha_limite]
 
 def confirma_pago(mensaje: str, dni: str):
+    if mensaje == "1":
+        fecha_pago = dame_fecha_limite(dni)
+        modificar_csv('fecha_de_pago', fecha_limite, dni)
+        modificar_csv('ESTADO', 'Compromete fecha', dni)
     if mensaje == "2":
         modificar_csv('ESTADO', 'No puede pagar', dni)
         modificar_csv('cant_cuotas_elegido', None, dni)
@@ -120,11 +125,19 @@ def confirma_pago(mensaje: str, dni: str):
 
 def elegir_plan(mensaje: str, dni: str):
     if mensaje in ['1', '2', '3']:
-        modificar_csv('cant_cuotas_elegido', 'CANT  CUOTAS'+mensaje, dni)
-        modificar_csv('monto_elegido', 'MONTON CUOTA '+mensaje, dni)
+        modificar_csv('cant_cuotas_elegido', leer_xlsx('CANT  CUOTAS'+mensaje, dni), dni)
+        modificar_csv('monto_elegido', leer_xlsx('MONTON CUOTA '+mensaje, dni), dni)
         return "17"
     elif mensaje.lower() in ['no me sirven esas cuotas', 'necesito mas cuotas', 'no puedo pagar en esa fecha', 'no puedo pagar esos montos']:
         return "16"
+
+def modificar_telefono(numero_telefono, dni, campo='telefono2'):
+    regex = r"\+54 9 (\d{4} \d{2}|\d{3} \d{3}|\d{2} \d{4})[- ]\d{4}"
+    if re.fullmatch(regex, numero_telefono) is not None and verificar_dni(dni):
+        modificar_csv(campo, numero_telefono, dni)
+        return True
+    else:
+        raise Exception('Telefono invallido')
 
 @app.post('/respuesta')
 async def respuesta(state: ActualState):
@@ -151,12 +164,11 @@ async def respuesta(state: ActualState):
 
 @app.post('/telefono')
 async def telefono(telefono: Telefono):
-    numero_telefono = telefono.numero_telefono.strip()
-    regex = r"\+54 9 (\d{4} \d{2}|\d{3} \d{3}|\d{2} \d{4})[- ]\d{4}"
-    if re.fullmatch(regex, numero_telefono) is not None and verificar_dni(telefono.dni):
-        modificar_csv('telefono', numero_telefono, telefono.dni)
+    try:
+        numero_telefono = telefono.numero_telefono.strip()
+        modificar_telefono(numero_telefono, telefono.dni, 'telefono')
         texto = 'OK'
-    else:
+    except:
         texto = 'payload invalido'
     return {'respuesta': texto}
 
@@ -174,6 +186,7 @@ async def subir_planilla(file: UploadFile = File(...)):
         df['fecha_de_pago'] = None
         df['cant_cuotas_elegido'] = None
         df['monto_elegido'] = None
+        df['telefono2'] = None
         df.to_csv(config['planilla_salida'], index=False)
         texto = 'OK'
     except Exception as e:

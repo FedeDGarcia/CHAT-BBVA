@@ -191,9 +191,9 @@ mensajes:
       y te podes contactar con nosotros al 0800 220 0059 o  por mail
       cdncobranzas@companiadelnorte.com
     siguientes:
-      funcion: fin
+      funcion: modificar_telefono
       resultados:
-        fin: 18
+        True: 18
   17:
     texto: |-
       Perfecto, entonces el pago deberá realizarse antes de {0}. ¿Confirma?
