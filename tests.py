@@ -113,7 +113,7 @@ class Nodo4(unittest.TestCase):
     def test_opciones_pago(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria , cancelás por $15026.60 ¿Ves factible abonar esto al 15/08/2024?\n1) SI\n2) NO')
+        self.assertEqual(response[0], 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria , cancelás por $15026.60 ¿Ves factible abonar esto al 16/08/2024?\n1) SI\n2) NO')
         self.assertEqual(response[1], '6')
 
     def test_libre_deuda(self):
@@ -179,7 +179,7 @@ class Nodo6(unittest.TestCase):
     def test_acepta(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 15/08/2024. ¿Confirma?\n1) SI\n2) NO')
+        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 16/08/2024. ¿Confirma?\n1) SI\n2) NO')
         self.assertEqual(response[1], '11')
 
     def test_no_acepta(self):
@@ -289,13 +289,13 @@ class Nodo12(unittest.TestCase):
         payload = {'nodo': 12, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Entendemos que este no es un monto viable para vos para cancelar tu deuda.\nDesde CDN te podemos ofrecer las siguientes opciones de pago.\n¡Elegi la opción que más te convenga!\nA) Cancelas por (VARIABLE CANT CUOTAS 1)  DE $ (VARIABLE MONTO CUOTA 1).\nB) Cancelas por (VARIABLE CANT CUOTAS 2)  DE $ (VARIABLE MONTO CUOTA 2).\nC) Cancelas por (VARIABLE CANT CUOTAS 3) DE $ (VARIABLE MONTO CUOTA 3).')
-        self.assertEqual(response[1], 15)
+        self.assertEqual(response[1], '15')
 
     def test_no_quiere_cuotas(self):
         payload = {'nodo': 12, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\n y te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
-        self.assertEqual(response[1], 16)
+        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\ny te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
 
     def test_dni_invalido(self):
         payload = {'nodo': 12, 'dni': dni_invalido, 'mensaje': '1'}
@@ -361,54 +361,55 @@ class Nodo15(unittest.TestCase):
     def test_rechaza_cuotas(self):
         payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'No me sirven esas cuotas'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\n y te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
-        self.assertEqual(response[1], 16)
+        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\ny te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
         payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'Necesito mas cuotas'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\n y te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
-        self.assertEqual(response[1], 16)
+        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\ny te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
         payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'No puedo pagar en esa fecha'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\n y te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
-        self.assertEqual(response[1], 16)
+        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\ny te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
         payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'No puedo pagar esos montos'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\n y te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
-        self.assertEqual(response[1], 16)
+        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\ny te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
 
 class Nodo16(unittest.TestCase):
     def test_telefono_valido(self):
         payload = {'nodo': 16, 'mensaje': '+54 9 11 1234-5678', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Conversación terminada')
-        self.assertEqual(response[1], 18)
+        self.assertEqual(response[1], '18')
         self.assertTrue(verificar_valor(dni_valido, 'telefono2', '+54 9 11 1234-5678'))
 
     def test_telefono_invalido(self):
         payload = {'nodo': 16, 'mensaje': '+54 9 11 1234-sdfsfg5678', 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Conversación terminada')
-        self.assertEqual(response[1], 18)
+        self.assertEqual(response[1], '18')
 
     def test_dni_invalido(self):
         payload = {'nodo': 16, 'mensaje': '+54 9 11 1234-5678', 'dni': dni_invalido}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Conversación terminada')
-        self.assertEqual(response[1], 18)
+        self.assertEqual(response[0], 'payload invalido')
+        self.assertEqual(response[1], -1)
 
 class Nodo17(unittest.TestCase):
+    maxDiff = None
     def test_confirma(self):
         payload = {'nodo': 17, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envío del convenio.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debés realizarlo en un cajero automático:\n1º PAGOS\n2º RECAUDACIONES\n3º EFECTIVO EN PESOS\n4º CODIGO DE SERVICIO: 4482\n5º NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6º TOTAL A PAGAR: (Valor primera cuota)\n7º PARA TRANSFERENCIA A ICHTHYS S.R.L. (Razón social)\nNUMERO: 331-422456/6 CUIT: 30715141627 CBU: 0170331120000042245663\nUna vez que realices el pago por favor enviá el comprobante por:\nwhatsapp: wa.link/bbva_estudiocdn\nemail: cdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 9 a 17:30 hs o bien te podes contactar con nosotros al 0800 220 0059.\nSaludos.')
-        self.assertEqual(response[1], 13)
+        self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envio del convenio.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
+        self.assertEqual(response[1], '13')
         self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '20/04/2027'))
 
     def test_no_confirma(self):
         payload = {'nodo': 17, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\n y te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
-        self.assertEqual(response[1], 16)
+        self.assertEqual(response[0], 'Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs\ny te podes contactar con nosotros al 0800 220 0059 o  por mail\ncdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'No puede pagar'))
         self.assertTrue(verificar_valor(dni_valido, 'cant_cuotas_elegido', np.nan))
         self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', np.nan))

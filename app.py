@@ -115,9 +115,12 @@ def confirma_pago(mensaje: str, dni: str):
     return mensaje
 
 def elegir_plan(mensaje: str, dni: str):
-    modificar_csv('cant_cuotas_elegido', 'CANT  CUOTAS'+mensaje, dni)
-    modificar_csv('monto_elegido', 'MONTON CUOTA '+mensaje, dni)
-    return "17"
+    if mensaje in ['1', '2', '3']:
+        modificar_csv('cant_cuotas_elegido', 'CANT  CUOTAS'+mensaje, dni)
+        modificar_csv('monto_elegido', 'MONTON CUOTA '+mensaje, dni)
+        return "17"
+    elif mensaje.lower() in ['no me sirven esas cuotas', 'necesito mas cuotas', 'no puedo pagar en esa fecha', 'no puedo pagar esos montos']:
+        return "16"
 
 @app.post('/respuesta')
 async def respuesta(state: ActualState):
