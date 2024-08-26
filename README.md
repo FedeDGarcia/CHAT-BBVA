@@ -8,6 +8,7 @@ $ uvicorn app:app --host 172.31.7.51 --port 3000 --reload
 - POST /respuesta: Dado un id de nodo, un dni y un mensaje devuelve el texto correspondiente al siguiente nodo
 - POST /telefono: Dado un dni y un numero de telefono con el formato que los manda wp (+54 9 XX XXXX-XXXX o +54 9 XXX XXX-XXX o +54 9 XXXX XX-XXXX) lo inserta en la db y devuelve un estado del proceso (OK)
 - POST /subir_xlsx: Dado un archivo XLSX lo sube al server y arma la planilla de salida
+- GET /bajar_csv: Devuelve el csv con las modificaciones luego de la interacción con la gente
 
 ## Ejemplos de uso
 * Responder mensaje
@@ -21,4 +22,8 @@ $ curl -X POST http://localhost:3000/telefono -H 'Content-Type: application/json
 * Subir xlsx
 ```bash
 curl -X 'POST' http://localhost:3000/subir_xlsx -H 'accept: application/json' -H 'Content-Type: multipart/form-data' -F 'file=@BASE PRUEBA CHAT BBVA 26072024.xlsx;type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+```
+* Bajas csv
+```bash
+curl -X 'GET' http://localhost:3000/bajar_csv -o planilla.csv
 ```

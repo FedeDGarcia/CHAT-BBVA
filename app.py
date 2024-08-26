@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi import File, UploadFile
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional
 import uvicorn
@@ -192,6 +193,10 @@ async def subir_planilla(file: UploadFile = File(...)):
     except Exception as e:
         texto = f"payload invalido, {e}"
     return {'respuesta': texto}
+
+@app.get('/bajar_csv')
+async def bajar_planilla():
+    return FileResponse(config['planilla_salida'])
 
 if __name__ == '__main__':
     uvicorn.run(app, host='localhost', port=3000)
