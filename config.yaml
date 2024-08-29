@@ -186,10 +186,13 @@ mensajes:
         16: 16
   16:
     texto: |-
-      Entiendo. Te voy a pedir un teléfono de contacto alternativo para que en un futuro podamos enviarte mejoras en tu oferta cancelatoria.
-      Te brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs
-      y te podes contactar con nosotros al 0800 220 0059 o  por mail
-      cdncobranzas@companiadelnorte.com
+      Entiendo, en un futuro podamos enviarte mejoras en tu oferta cancelatoria...
+      Te voy a pedir un teléfono de contacto alternativo de la siguiente manera: Código de país (+54 para Argentina) + 9 + Código de área sin 0 + Número de celular sin 15, separando cada parte con un espacio
+      Ejemplos:
+        * +54 9 11 1234-5678
+        * +54 9 221 234-5678
+        * +54 9 2202 34-5678
+      Te brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com
     siguientes:
       funcion: modificar_telefono
       resultados:

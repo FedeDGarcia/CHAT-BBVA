@@ -32,6 +32,10 @@ def modificar_csv(campo, valor, dni):
     dnis.loc[dnis['DNI'] == dni, [campo]] = valor
     dnis.to_csv(config['planilla_salida'], index=False)
 
+def leer_csv(campo, dni):
+    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
+    return dnis[dnis['DNI'] == dni][campo].values[0]
+
 def leer_xlsx(campo, dni):
     dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
     return dnis[dnis['DNI'] == dni][campo].values[0]
@@ -134,7 +138,7 @@ def elegir_plan(mensaje: str, dni: str):
 
 def modificar_telefono(numero_telefono, dni, campo='telefono2'):
     regex = r"\+54 9 (\d{4} \d{2}|\d{3} \d{3}|\d{2} \d{4})[- ]\d{4}"
-    if re.fullmatch(regex, numero_telefono) is not None and verificar_dni(dni):
+    if re.fullmatch(regex, numero_telefono) is not None and verificar_dni(dni) and (campo != 'telefono2' or leer_csv('telefono', dni) != numero_telefono):
         modificar_csv(campo, numero_telefono, dni)
         return True
     else:
@@ -184,6 +188,7 @@ async def subir_planilla(file: UploadFile = File(...)):
         df = pd.read_excel(config['planilla_entrada'])
         df = df.dropna(subset=['DNI', 'ESTADO', 'DEUDA_TOTAL', 'NOMBRE', 'CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3', 'OFERTA CANCELATORIA '])
         df.to_excel(config['planilla_entrada'], index=False)
+        df['telefono'] = None
         df['fecha_de_pago'] = None
         df['cant_cuotas_elegido'] = None
         df['monto_elegido'] = None
