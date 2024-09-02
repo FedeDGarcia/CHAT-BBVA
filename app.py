@@ -133,7 +133,7 @@ def elegir_plan(mensaje: str, dni: str):
         modificar_csv('cant_cuotas_elegido', leer_xlsx('CANT  CUOTAS '+mensaje, dni), dni)
         modificar_csv('monto_elegido', leer_xlsx('MONTON CUOTA '+mensaje, dni), dni)
         return "17"
-    elif mensaje.lower() in ['no me sirven esas cuotas', 'necesito mas cuotas', 'no puedo pagar en esa fecha', 'no puedo pagar esos montos']:
+    elif mensaje.lower() in ['no me sirven esas cuotas', 'no me sirven estas cuotas', 'necesito mas cuotas', 'no puedo pagar en esa fecha', 'no puedo pagar esos montos']:
         return "16"
 
 def modificar_telefono(numero_telefono, dni, campo='telefono2'):
