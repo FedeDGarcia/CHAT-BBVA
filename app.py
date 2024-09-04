@@ -49,7 +49,7 @@ def verificar_dni(dni: str, *args):
 
 def verificar_correo(correo: str, dni: str):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-    if correo.lower() in ['no tengo mail', 'no tengo correo electronico', 'no uso mail', 'no uso correo electronico', 'no lo recuerdo', 'no me acuerdo']:
+    if correo.lower() in ['no tengo mail', 'no tengo correo electronico', 'no uso mail', 'no uso correo electronico', 'no lo recuerdo', 'no me acuerdo', 'no tengo', 'no uso']:
         respuesta = True
     elif re.fullmatch(regex, correo) is None:
         raise Exception('mail invalido')
