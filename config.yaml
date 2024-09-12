@@ -84,6 +84,7 @@ mensajes:
         necesito un plan de pagos: 12
         plan en cuotas: 12
         cuotas: 12
+        no puedo pagar en esa fecha: 12
   7:
     texto: |-
       Para solicitar el LIBRE DEUDA  podés acercarte a la sucursal más cercana o comunicarse al 0800-999-2282 de Lunes a Viernes de 10 a 15 hs
@@ -141,7 +142,7 @@ mensajes:
         2: 16
   13:
     texto: |-
-      Gracias, entonces registro tu compromiso de pago para esa fecha. Te solicitamos por favor un correo electrónico para poder realizarte el envio del convenio.
+      Gracias, entonces registro tu compromiso de pago para esa fecha.
       El importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:
       Te brindamos el paso a paso de como debes realizarlo en un cajero automático:
       1° PAGOS
@@ -149,7 +150,7 @@ mensajes:
       3° EFECTIVO EN PESOS
       4° CODIGO DE SERVICIO: 4482
       5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.
-      6° TOTAL A PAGAR: (Valor primera cuota)
+      6° TOTAL A PAGAR: ${0} (Valor primera cuota)
       7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)
       NUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663
       Una vez que realices el pago por favor envia el comprobante por:
@@ -159,6 +160,7 @@ mensajes:
       Nuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs
       o bien te podes contactar con nosotros al 0800 220 0059
       Saludos.
+    funcion: dame_primera_cuota
     siguientes:
       funcion: fin
       resultados:
@@ -175,15 +177,15 @@ mensajes:
       Entendemos que este no es un monto viable para vos para cancelar tu deuda.
       Desde CDN te podemos ofrecer las siguientes opciones de pago.
       ¡Elegi la opción que más te convenga!
-      1) Cancelas por {0}  DE $ {1}.
-      2) Cancelas por {2}  DE $ {3}.
-      3) Cancelas por {4}  DE $ {5}.
+      1) Cancelas por {0} CUOTAS DE $ {1}.
+      2) Cancelas por {2} CUOTAS DE $ {3}.
+      3) Cancelas por {4} CUOTAS DE $ {5}.
     funcion: dame_planes
     siguientes:
       funcion: elegir_plan
       resultados:
         17: 17
-        16: 16
+        rechaza: 4
   16:
     texto: |-
       Entiendo, en un futuro podamos enviarte mejoras en tu oferta cancelatoria...
@@ -196,7 +198,7 @@ mensajes:
     siguientes:
       funcion: modificar_telefono
       resultados:
-        True: 18
+        True: 19
   17:
     texto: |-
       Perfecto, entonces el pago deberá realizarse antes de {0}. ¿Confirma?
@@ -210,3 +212,13 @@ mensajes:
         2: 16
   18:
     texto: Conversación terminada
+    siguientes:
+      funcion: "lambda x, y: 0"
+      resultados:
+        0: 0
+  19:
+    texto: Hemos registrado tu teléfono de contacto, estaremos en contacto a la brevedad para brindarte mejoras en tus opciones de pago
+    siguientes:
+      funcion: "lambda x, y: 18"
+      resultados:
+        18: 18
