@@ -6,6 +6,7 @@ from typing import Optional
 import uvicorn
 import yaml
 import pandas as pd
+import numpy as np
 import re
 from datetime import datetime
 
@@ -117,6 +118,12 @@ def dame_oferta_fecha(dni: str, *args):
     fecha_limite = dame_fecha_limite(dni)
     return [oferta, fecha_limite]
 
+def dame_primera_cuota(dni: str, *args):
+    cuota = leer_csv('monto_elegido', dni)
+    if np.isnan(cuota):
+        cuota = leer_csv('OFERTA CANCELATORIA ', dni)
+    return '{0:.2f}'.format(cuota)
+
 def confirma_pago(mensaje: str, dni: str):
     if mensaje == "1":
         fecha_limite = dame_fecha_limite(dni)
@@ -134,7 +141,7 @@ def elegir_plan(mensaje: str, dni: str):
         modificar_csv('monto_elegido', leer_xlsx('MONTON CUOTA '+mensaje, dni), dni)
         return "17"
     elif mensaje.lower() in ['no me sirven esas cuotas', 'no me sirven estas cuotas', 'necesito mas cuotas', 'no puedo pagar en esa fecha', 'no puedo pagar esos montos']:
-        return "16"
+        return "rechaza"
 
 def modificar_telefono(numero_telefono, dni, campo='telefono2'):
     regex = r"\+54 9 (\d{4} \d{2}|\d{3} \d{3}|\d{2} \d{4})[- ]\d{4}"
