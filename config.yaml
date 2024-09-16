@@ -211,7 +211,7 @@ mensajes:
         1: 13
         2: 16
   18:
-    texto: Conversación terminada
+    texto: Gracias por contactarte con BBVA. Hasta luego!
     siguientes:
       funcion: "lambda x, y: 0"
       resultados:
