@@ -51,10 +51,16 @@ mensajes:
       funcion: verificar_estado
       resultados:
         1: 5
+        ya pague: 5
         2: 6
+        quiero conocer mis opciones de pago: 6
         3: 7
+        libre deuda: 7
         4: 8
+        defensa del consumidor: 8
         5: 9
+        desconozco deuda: 9
+        no tengo deuda con bbva: 9
   5:
     texto: |-
       Perfecto, te pedimos  que nos indiques la fecha de pago EJ: 01/03/2024
@@ -71,10 +77,12 @@ mensajes:
       2) NO
     funcion: dame_oferta_fecha
     siguientes:
-      funcion: "lambda x, y: x.lower()"
+      funcion: "lambda x, y: unidecode.unidecode(x.lower())"
       resultados:
         1: 11
+        si: 11
         2: 12
+        no: 12
         necesito refinanciar: 12
         quiero refinanciar: 12
         refinanciacion: 12
@@ -136,10 +144,12 @@ mensajes:
       2) NO
     funcion: dame_oferta
     siguientes:
-      funcion: "lambda x, y: x"
+      funcion: "lambda x, y: unidecode.unidecode(x.lower())"
       resultados:
         1: 15
+        si: 15
         2: 16
+        no: 16
   13:
     texto: |-
       Gracias, entonces registro tu compromiso de pago para esa fecha.
@@ -209,7 +219,9 @@ mensajes:
       funcion: confirma_pago
       resultados:
         1: 13
+        si: 13
         2: 16
+        no: 16
   18:
     texto: Gracias por contactarte con BBVA. Hasta luego!
     siguientes:

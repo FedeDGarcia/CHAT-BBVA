@@ -8,6 +8,7 @@ import yaml
 import pandas as pd
 import numpy as np
 import re
+import unidecode
 from datetime import datetime
 
 app = FastAPI()
@@ -61,14 +62,15 @@ def verificar_correo(correo: str, dni: str):
 
 def verificar_estado(opcion :str, dni:str):
     estado = None
-    if opcion == '3':
+    opcion = unidecode.unidecode(opcion.lower())
+    if opcion == '3' or opcion == 'libre deuda':
         estado = 'LIBRE DEUDA'
-    elif opcion == '4':
+    elif opcion == '4' or opcion == 'defensa del consumidor':
         estado = 'DEFENSA DEL CONSUMIDOR'
-    elif opcion == '5':
+    elif opcion == '5' or opcion == 'desconozco deuda' or opcion == 'no tengo deuda con bbva':
         estado = 'DESCONOCE DEUDA'
     modificar_csv('ESTADO', estado, dni)
-    return opcion
+    return unidecode.unidecode(opcion.lower())
 
 def verificar_mes_actual(fecha: str, dni: str):
     fecha = datetime.strptime(fecha, '%d/%m/%Y')
@@ -80,9 +82,9 @@ def verificar_mes_actual(fecha: str, dni: str):
         raise Exception('mes incorrecto')
 
 def verificar_fecha(fecha: str, dni: str):
-    if fecha == '1':
+    if fecha == '1' or unidecode.unidecode(fecha.lower()) == 'si':
         fecha = dame_fecha_limite(dni)
-    elif fecha == '2':
+    elif fecha == '2' or unidecode.unidecode(fecha.lower()) == 'no':
         return False
     fecha_formateada = datetime.strptime(fecha, '%d/%m/%Y')
     if fecha_formateada > datetime.today():
@@ -125,11 +127,12 @@ def dame_primera_cuota(dni: str, *args):
     return '{0:.2f}'.format(cuota)
 
 def confirma_pago(mensaje: str, dni: str):
-    if mensaje == "1":
+    mensaje = unidecode.unidecode(mensaje.lower())
+    if mensaje == "1" or mensaje == 'si':
         fecha_limite = dame_fecha_limite(dni)
         modificar_csv('fecha_de_pago', fecha_limite, dni)
         modificar_csv('ESTADO', 'Compromete fecha', dni)
-    if mensaje == "2":
+    if mensaje == "2" or mensaje == 'no':
         modificar_csv('ESTADO', 'No puede pagar', dni)
         modificar_csv('cant_cuotas_elegido', None, dni)
         modificar_csv('monto_elegido', None, dni)
@@ -158,7 +161,7 @@ async def respuesta(state: ActualState):
         funcion = mensajes[nodo]['siguientes']['funcion']
         decision = str(eval(funcion)(state.mensaje, state.dni))
         proximo_nodo = mensajes[nodo]['siguientes']['resultados'][decision]
-        if nodo not in ("0","1") and not verificar_dni(state.dni):
+        if nodo not in ("0","1","2") and not verificar_dni(state.dni):
             raise Exception('DNI invalido')
         if 'funcion' in mensajes[proximo_nodo].keys():
             valor_placeholder = eval(mensajes[proximo_nodo]['funcion'])(state.dni)
