@@ -10,8 +10,12 @@ import numpy as np
 import re
 import unidecode
 from datetime import datetime
+from pydantic import BaseModel
+from openai import OpenAI
 
 app = FastAPI()
+
+client = OpenAI(api_key='')
 
 with open('config.yaml', 'r') as f:
     config = yaml.load(f, Loader=yaml.BaseLoader)
@@ -51,9 +55,7 @@ def verificar_dni(dni: str, *args):
 
 def verificar_correo(correo: str, dni: str):
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
-    if correo.lower() in ['no tengo mail', 'no tengo correo electronico', 'no uso mail', 'no uso correo electronico', 'no lo recuerdo', 'no me acuerdo', 'no tengo', 'no uso']:
-        respuesta = True
-    elif re.fullmatch(regex, correo) is None:
+    if re.fullmatch(regex, correo) is None:
         raise Exception('mail invalido')
     else:
         modificar_csv('MAIL2', correo, dni)
@@ -143,8 +145,6 @@ def elegir_plan(mensaje: str, dni: str):
         modificar_csv('cant_cuotas_elegido', leer_xlsx('CANT  CUOTAS '+mensaje, dni), dni)
         modificar_csv('monto_elegido', leer_xlsx('MONTON CUOTA '+mensaje, dni), dni)
         return "17"
-    elif mensaje.lower() in ['no me sirven esas cuotas', 'no me sirven estas cuotas', 'necesito mas cuotas', 'no puedo pagar en esa fecha', 'no puedo pagar esos montos']:
-        return "rechaza"
 
 def modificar_telefono(numero_telefono, dni, campo='telefono2'):
     regex = r"\+54 9 (\d{4} \d{2}|\d{3} \d{3}|\d{2} \d{4})[- ]\d{4}"
@@ -154,13 +154,40 @@ def modificar_telefono(numero_telefono, dni, campo='telefono2'):
     else:
         raise Exception('Telefono invalido')
 
+class Nodo(BaseModel):
+    numero_nodo: int
+
+def preguntar_salto(mensaje):
+    completion = client.beta.chat.completions.parse(
+                        model="gpt-4o-2024-08-06",
+                        messages=[
+                            {"role": "system", "content": """Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
+                                                            Si dice algo parecido a esta lista: ['no me sirven esas cuotas', 'no me sirven estas cuotas', 'necesito mas cuotas', 'no puedo pagar en esa fecha', 'no puedo pagar esos montos'] devolve el nodo 4.
+                                                            Si dice algo de esta lista: ['no tengo mail', 'no tengo correo electronico', 'no uso mail', 'no uso correo electronico', 'no lo recuerdo', 'no me acuerdo', 'no tengo', 'no uso'] mandalo al nodo 4.
+                                                            Pero si dice algo parecido a algun valor de esta lista ['necesito refinanciar', 'quiero refinanciar', 'refinanciacion', 'acuerdo', 'a cuenta', 'necesito cuotas', 'necesito un plan de pagos', 'plan en cuotas', 'cuotas'] es el nodo 12.
+                                                            En cualquier otro caso devolve un -1
+                                                            """},
+                            {"role": "user", "content": f"A que se nodo iria este mensaje {mensaje}?"}
+                        ],
+            	        response_format=Nodo,
+                        temperature=0.7
+                    )
+    nodo = completion.choices[0].message.parsed.numero_nodo
+    if nodo == -1:
+        return None
+    return str(nodo)
+
 @app.post('/respuesta')
 async def respuesta(state: ActualState):
     try:
         nodo = str(state.nodo)
-        funcion = mensajes[nodo]['siguientes']['funcion']
-        decision = str(eval(funcion)(state.mensaje, state.dni))
-        proximo_nodo = mensajes[nodo]['siguientes']['resultados'][decision]
+        salto = preguntar_salto(state.mensaje)
+        if salto:
+            proximo_nodo = salto
+        else:
+            funcion = mensajes[nodo]['siguientes']['funcion']
+            decision = str(eval(funcion)(state.mensaje, state.dni))
+            proximo_nodo = mensajes[nodo]['siguientes']['resultados'][decision]
         if nodo not in ("0","1","2") and not verificar_dni(state.dni):
             raise Exception('DNI invalido')
         if 'funcion' in mensajes[proximo_nodo].keys():

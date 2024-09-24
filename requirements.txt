@@ -5,3 +5,4 @@ fastapi
 openpyxl
 python-multipart
 unidecode
+openai

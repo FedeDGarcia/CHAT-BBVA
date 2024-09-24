@@ -83,16 +83,6 @@ mensajes:
         si: 11
         2: 12
         no: 12
-        necesito refinanciar: 12
-        quiero refinanciar: 12
-        refinanciacion: 12
-        acuerdo: 12
-        a cuenta: 12
-        necesito cuotas: 12
-        necesito un plan de pagos: 12
-        plan en cuotas: 12
-        cuotas: 12
-        no puedo pagar en esa fecha: 12
   7:
     texto: |-
       Para solicitar el LIBRE DEUDA  podés acercarte a la sucursal más cercana o comunicarse al 0800-999-2282 de Lunes a Viernes de 10 a 15 hs
@@ -195,7 +185,6 @@ mensajes:
       funcion: elegir_plan
       resultados:
         17: 17
-        rechaza: 4
   16:
     texto: |-
       Entiendo, en un futuro podamos enviarte mejoras en tu oferta cancelatoria...
