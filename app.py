@@ -243,12 +243,12 @@ async def respuesta(state: ActualState):
     try:
         nodo = str(state.nodo)
         
-        if nodo in ['15', "17"]:
+        if nodo in ['15', '17']:
             cuotas_dadas = True
         else:
             cuotas_dadas = False
 
-        if int(nodo) >= 6 and int(nodo) not in [7, 8, 10]:
+        if int(nodo) >= 6 and int(nodo) not in [7, 8, 10, 20]:
             fecha_dada = True
         else:
             fecha_dada = False
