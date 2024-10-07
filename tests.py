@@ -102,6 +102,12 @@ class Nodo3(unittest.TestCase):
         self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
         self.assertEqual(response[1], '4')
 
+    def test_tiene_promesa_en_curso(self):
+        payload = {'nodo': 3, 'mensaje': 'prueba@gmail.com', 'dni': dni_valido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Al  momento vemos que tenes un acuerdo en curso.\nTe pedimos  que nos indiques la fecha de pago EJ: 01/03/2024\nY nos envies el archivo adjunto del comprobante para poder registrarlo')
+        self.assertEqual(response[1], '20')
+
 class Nodo4(unittest.TestCase):
     def test_pago(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '1'}
@@ -253,10 +259,6 @@ class Nodo6(unittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
         self.assertEqual(response[1], '12')
-        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'No puedo pagar en esa fecha'}
-        response = requestAPI(payload)
-        self.assertEqual(response[0], 'Desconocemos la situación particular de cada uno, pero queremos ayudarte a no tener este problema. Tu cuenta está a punto de ser derivada a la etapa siguiente, la de un fideicomiso, lo que implica costes  y honorarios por la operación.\nPodemos ofrecerte un plan de pagos abonando hasta el día de hoy CON HASTA 50% OFF\n¿Te interesaría conocer nuestras propuestas?\n1) SI\n2) NO')
-        self.assertEqual(response[1], '12')
 
     def test_pide_otras(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Acuerdo'}
@@ -273,6 +275,12 @@ class Nodo6(unittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response[0], 'payload invalido')
         self.assertEqual(response[1], -1)
+
+    def test_pide_otra_fecha(self):
+        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'No puedo pagar en esa fecha'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Indicanos en que fecha ves factible abonar tu deuda con BBVA en el siguiente formato\nEJ: 02/03/2024.')
+        self.assertEqual(response[1], '14')
 
 class Nodo7(unittest.TestCase):
     def test_terminar(self):
@@ -419,20 +427,16 @@ class Nodo15(unittest.TestCase):
     def test_rechaza_cuotas(self):
         payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'No me sirven esas cuotas'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
-        self.assertEqual(response[1], '4')
+        self.assertEqual(response[0], 'Entiendo, en un futuro podamos enviarte mejoras en tu oferta cancelatoria...\nTe voy a pedir un teléfono de contacto alternativo de la siguiente manera: Código de país (+54 para Argentina) + 9 + Código de área sin 0 + Número de celular sin 15, separando cada parte con un espacio\nEjemplos:\n  * +54 9 11 1234-5678\n  * +54 9 221 234-5678\n  * +54 9 2202 34-5678\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
         payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'Necesito mas cuotas'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
-        self.assertEqual(response[1], '4')
-        payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'No puedo pagar en esa fecha'}
-        response = requestAPI(payload)
-        self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
-        self.assertEqual(response[1], '4')
+        self.assertEqual(response[0], 'Entiendo, en un futuro podamos enviarte mejoras en tu oferta cancelatoria...\nTe voy a pedir un teléfono de contacto alternativo de la siguiente manera: Código de país (+54 para Argentina) + 9 + Código de área sin 0 + Número de celular sin 15, separando cada parte con un espacio\nEjemplos:\n  * +54 9 11 1234-5678\n  * +54 9 221 234-5678\n  * +54 9 2202 34-5678\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
         payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': 'No puedo pagar esos montos'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], '¡Muchas gracias!\n Te contamos que a la fecha estás en mora por un importe de $16543.75. Para poder ayudarte, decime el motivo de tu contacto\n 1) YA PAGUE\n 2) QUIERO CONOCER MIS OPCIONES DE PAGO\n 3) LIBRE DEUDA\n 4) DEFENSA DEL CONSUMIDOR\n 5) DESCONOZCO DEUDA / NO TENGO DEUDA CON BBVA')
-        self.assertEqual(response[1], '4')
+        self.assertEqual(response[0], 'Entiendo, en un futuro podamos enviarte mejoras en tu oferta cancelatoria...\nTe voy a pedir un teléfono de contacto alternativo de la siguiente manera: Código de país (+54 para Argentina) + 9 + Código de área sin 0 + Número de celular sin 15, separando cada parte con un espacio\nEjemplos:\n  * +54 9 11 1234-5678\n  * +54 9 221 234-5678\n  * +54 9 2202 34-5678\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
 
 class Nodo16(unittest.TestCase):
     def test_telefono_valido(self):

@@ -35,8 +35,9 @@ mensajes:
     siguientes:
       funcion: verificar_correo
       resultados:
-        True: 4
+        1 : 4
         False: 3
+        2 : 20
   4:
     texto: |-
         ¡Muchas gracias!
@@ -223,3 +224,14 @@ mensajes:
       funcion: "lambda x, y: 18"
       resultados:
         18: 18
+  20:
+    texto: |-
+      Al  momento vemos que tenes un acuerdo en curso.
+      Te pedimos  que nos indiques la fecha de pago EJ: 01/03/2024
+      Y nos envies el archivo adjunto del comprobante para poder registrarlo
+    siguientes:
+      funcion: verificar_mes_actual
+      resultados:
+        True: 10
+        False: 5
+

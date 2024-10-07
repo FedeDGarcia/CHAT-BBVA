@@ -15,7 +15,7 @@ from openai import OpenAI
 
 app = FastAPI()
 
-client = OpenAI(api_key='')
+client = OpenAI(api_key='sk-iau9QZrZqSIPl4ko4vd4K8iZr0RIRWfeSxygIFNPr4T3BlbkFJO4xAtexfowUPPdI3RGQxNvOpLSzAaxY3ZGNjNJuAIA')
 
 with open('config.yaml', 'r') as f:
     config = yaml.load(f, Loader=yaml.BaseLoader)
@@ -43,7 +43,7 @@ def leer_csv(campo, dni):
     return dnis[dnis['DNI'] == dni][campo].values[0]
 
 def leer_xlsx(campo, dni):
-    dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
+    dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'ESTADO': str})
     return dnis[dnis['DNI'] == dni][campo].values[0]
 
 def fin(parametro, *args):
@@ -59,7 +59,10 @@ def verificar_correo(correo: str, dni: str):
         raise Exception('mail invalido')
     else:
         modificar_csv('MAIL2', correo, dni)
-        respuesta = True
+        respuesta = 1
+
+        if leer_xlsx('ESTADO', dni) == 'PROMESA EN CURSO':
+            respuesta = 2
     return respuesta
 
 def verificar_estado(opcion :str, dni:str):
@@ -157,12 +160,11 @@ def modificar_telefono(numero_telefono, dni, campo='telefono2'):
 class Nodo(BaseModel):
     numero_nodo: int
 
-def preguntar_salto(mensaje):
+def preguntar_salto_aux(mensaje):
     completion = client.beta.chat.completions.parse(
                         model="gpt-4o-2024-08-06",
                         messages=[
                             {"role": "system", "content": """Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
-                                                            Si dice algo parecido a esta lista: ['no me sirven esas cuotas', 'no me sirven estas cuotas', 'necesito mas cuotas', 'no puedo pagar en esa fecha', 'no puedo pagar esos montos'] devolve el nodo 4.
                                                             Si dice algo de esta lista: ['no tengo mail', 'no tengo correo electronico', 'no uso mail', 'no uso correo electronico', 'no lo recuerdo', 'no me acuerdo', 'no tengo', 'no uso'] mandalo al nodo 4.
                                                             Pero si dice algo parecido a algun valor de esta lista ['necesito refinanciar', 'quiero refinanciar', 'refinanciacion', 'acuerdo', 'a cuenta', 'necesito cuotas', 'necesito un plan de pagos', 'plan en cuotas', 'cuotas'] es el nodo 12.
                                                             En cualquier otro caso devolve un -1
@@ -177,13 +179,86 @@ def preguntar_salto(mensaje):
         return None
     return str(nodo)
 
+def no_sirven_cuotas(mensaje):
+    completion = client.beta.chat.completions.parse(
+                        model="gpt-4o-2024-08-06",
+                        messages=[
+                            {"role": "system", "content": """Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
+                                                            Si dice algo parecido a esta lista: ['no me sirven esas cuotas', 'no me sirven estas cuotas', 'necesito mas cuotas', 'no puedo pagar esos montos'] devolve el nodo 16.
+                                                            En cualquier otro caso devolve un -1
+                                                            """},
+                            {"role": "user", "content": f"A que se nodo iria este mensaje {mensaje}?"}
+                        ],
+            	        response_format=Nodo,
+                        temperature=0.7
+                    )
+    nodo = completion.choices[0].message.parsed.numero_nodo
+    if nodo == -1:
+        return None
+    return str(nodo)
+
+def no_sirve_fecha(mensaje):
+    completion = client.beta.chat.completions.parse(
+                        model="gpt-4o-2024-08-06",
+                        messages=[
+                            {"role": "system", "content": """Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
+                                                            Si dice algo parecido a esta lista: ['no cobro en esa fecha', 'no puedo pagar en esa fecha', 'no me sirve esa fecha', 'no tengo plata en esa fecha'] devolve el nodo 14.
+                                                            En cualquier otro caso devolve un -1
+                                                            """},
+                            {"role": "user", "content": f"A que se nodo iria este mensaje {mensaje}?"}
+                        ],
+            	        response_format=Nodo,
+                        temperature=0.7
+                    )
+    nodo = completion.choices[0].message.parsed.numero_nodo
+    if nodo == -1:
+        return None
+    return str(nodo)
+
+def preguntar_salto(mensaje, cuotas_dadas, fecha_dada):
+
+    if not cuotas_dadas:
+        salto = preguntar_salto_aux(mensaje)
+        if salto is not None:
+            return salto
+
+    if cuotas_dadas:
+        salto2 = no_sirven_cuotas(mensaje)
+        if salto2 is not None:
+            return salto2
+    
+    if fecha_dada:
+        salto3 = no_sirve_fecha(mensaje)
+        if salto3 is not None:
+            return salto3
+
+    # Si todos son None, devolverá None automáticamente
+    return None
+
+
+
+
 @app.post('/respuesta')
 async def respuesta(state: ActualState):
     try:
         nodo = str(state.nodo)
-        salto = preguntar_salto(state.mensaje)
+        
+        if nodo in ['15', "17"]:
+            cuotas_dadas = True
+        else:
+            cuotas_dadas = False
+
+        if int(nodo) >= 6 and int(nodo) not in [7, 8, 10]:
+            fecha_dada = True
+        else:
+            fecha_dada = False
+
+
+        salto = preguntar_salto(state.mensaje, cuotas_dadas, fecha_dada)
+        
         if salto:
             proximo_nodo = salto
+
         else:
             funcion = mensajes[nodo]['siguientes']['funcion']
             decision = str(eval(funcion)(state.mensaje, state.dni))
