@@ -15,7 +15,7 @@ from openai import OpenAI
 
 app = FastAPI()
 
-client = OpenAI(api_key='sk-iau9QZrZqSIPl4ko4vd4K8iZr0RIRWfeSxygIFNPr4T3BlbkFJO4xAtexfowUPPdI3RGQxNvOpLSzAaxY3ZGNjNJuAIA')
+client = OpenAI(api_key='')
 
 with open('config.yaml', 'r') as f:
     config = yaml.load(f, Loader=yaml.BaseLoader)
