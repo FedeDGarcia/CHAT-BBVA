@@ -22,6 +22,7 @@ with open('config.yaml', 'r') as f:
 
 mensajes = config['mensajes']
 feriados = config['feriados']
+prompts = config['prompts']
 calendario_con_feriados = pd.offsets.CustomBusinessDay(holidays=feriados)
 
 class ActualState(BaseModel):
@@ -43,7 +44,7 @@ def leer_csv(campo, dni):
     return dnis[dnis['DNI'] == dni][campo].values[0]
 
 def leer_xlsx(campo, dni):
-    dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'ESTADO': str})
+    dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
     return dnis[dnis['DNI'] == dni][campo].values[0]
 
 def fin(parametro, *args):
@@ -164,7 +165,7 @@ def llamar_GPT(mensaje, prompt):
     completion = client.beta.chat.completions.parse(
                         model=config['modelo_GPT'],
                         messages=[
-                            {"role": "system", "content": config[prompt]},
+                            {"role": "system", "content": prompts[prompt]},
                             {"role": "user", "content": f"A que se nodo iria este mensaje {mensaje}?"}
                         ],
             	        response_format=Nodo,
@@ -174,16 +175,16 @@ def llamar_GPT(mensaje, prompt):
     if nodo == -1:
         return None
     return str(nodo)
-
+"""
 def preguntar_salto_aux(mensaje):
     completion = client.beta.chat.completions.parse(
                         model="gpt-4o-2024-08-06",
                         messages=[
-                            {"role": "system", "content": """Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
+                            {"role": "system", "content": ""Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
                                                             Si dice algo de esta lista: ['no tengo mail', 'no tengo correo electronico', 'no uso mail', 'no uso correo electronico', 'no lo recuerdo', 'no me acuerdo', 'no tengo', 'no uso'] mandalo al nodo 4.
                                                             Pero si dice algo parecido a algun valor de esta lista ['necesito refinanciar', 'quiero refinanciar', 'refinanciacion', 'acuerdo', 'a cuenta', 'necesito cuotas', 'necesito un plan de pagos', 'plan en cuotas', 'cuotas'] es el nodo 12.
                                                             En cualquier otro caso devolve un -1
-                                                            """},
+                                                            ""},
                             {"role": "user", "content": f"A que se nodo iria este mensaje {mensaje}?"}
                         ],
             	        response_format=Nodo,
@@ -198,10 +199,10 @@ def no_sirven_cuotas(mensaje):
     completion = client.beta.chat.completions.parse(
                         model="gpt-4o-2024-08-06",
                         messages=[
-                            {"role": "system", "content": """Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
+                            {"role": "system", "content": ""Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
                                                             Si dice algo parecido a esta lista: ['no me sirven esas cuotas', 'no me sirven estas cuotas', 'necesito mas cuotas', 'no puedo pagar esos montos'] devolve el nodo 16.
                                                             En cualquier otro caso devolve un -1
-                                                            """},
+                                                            ""},
                             {"role": "user", "content": f"A que se nodo iria este mensaje {mensaje}?"}
                         ],
             	        response_format=Nodo,
@@ -216,10 +217,10 @@ def no_sirve_fecha(mensaje):
     completion = client.beta.chat.completions.parse(
                         model="gpt-4o-2024-08-06",
                         messages=[
-                            {"role": "system", "content": """Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
+                            {"role": "system", "content": ""Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
                                                             Si dice algo parecido a esta lista: ['no cobro en esa fecha', 'no puedo pagar en esa fecha', 'no me sirve esa fecha', 'no tengo plata en esa fecha'] devolve el nodo 14.
                                                             En cualquier otro caso devolve un -1
-                                                            """},
+                                                            ""},
                             {"role": "user", "content": f"A que se nodo iria este mensaje {mensaje}?"}
                         ],
             	        response_format=Nodo,
@@ -228,22 +229,22 @@ def no_sirve_fecha(mensaje):
     nodo = completion.choices[0].message.parsed.numero_nodo
     if nodo == -1:
         return None
-    return str(nodo)
+    return str(nodo)"""
 
 def preguntar_salto(mensaje, cuotas_dadas, fecha_dada):
 
     if not cuotas_dadas:
-        salto = preguntar_salto_aux(mensaje)
+        salto = llamar_GPT(mensaje, "0")
         if salto is not None:
             return salto
 
     if cuotas_dadas:
-        salto2 = no_sirven_cuotas(mensaje)
+        salto2 = llamar_GPT(mensaje, "1")
         if salto2 is not None:
             return salto2
 
     if fecha_dada:
-        salto3 = no_sirve_fecha(mensaje)
+        salto3 = llamar_GPT(mensaje, "2")
         if salto3 is not None:
             return salto3
 

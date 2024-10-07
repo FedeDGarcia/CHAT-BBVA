@@ -4,6 +4,26 @@ cantidad_dias: 5
 feriados:
   - 2024-07-09
   - 2024-10-11
+
+modelo_GPT: "gpt-4o-2024-08-06"
+
+prompts: 
+  0: |-
+     Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
+     Si dice algo de esta lista: ['no tengo mail', 'no tengo correo electronico', 'no uso mail', 'no uso correo electronico', 'no lo recuerdo', 'no me acuerdo', 'no tengo', 'no uso'] mandalo al nodo 4.
+     Pero si dice algo parecido a algun valor de esta lista ['necesito refinanciar', 'quiero refinanciar', 'refinanciacion', 'acuerdo', 'a cuenta', 'necesito cuotas', 'necesito un plan de pagos', 'plan en cuotas', 'cuotas'] es el nodo 12.
+     En cualquier otro caso devolve un -1
+
+  1: |-
+     Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
+     Si dice algo parecido a esta lista: ['no me sirven esas cuotas', 'no me sirven estas cuotas', 'necesito mas cuotas', 'no puedo pagar esos montos'] devolve el nodo 16.
+     En cualquier otro caso devolve un -1
+
+  2: |-
+     Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
+     Si dice algo parecido a esta lista: ['no cobro en esa fecha', 'no puedo pagar en esa fecha', 'no me sirve esa fecha', 'no tengo plata en esa fecha'] devolve el nodo 14.
+     En cualquier otro caso devolve un -1
+
 mensajes:
   0:
     texto: Hola! Soy Mora, el asistente virtual de CDN. ¿Me dirías tu número de DNI?
