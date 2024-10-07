@@ -175,61 +175,6 @@ def llamar_GPT(mensaje, prompt):
     if nodo == -1:
         return None
     return str(nodo)
-"""
-def preguntar_salto_aux(mensaje):
-    completion = client.beta.chat.completions.parse(
-                        model="gpt-4o-2024-08-06",
-                        messages=[
-                            {"role": "system", "content": ""Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
-                                                            Si dice algo de esta lista: ['no tengo mail', 'no tengo correo electronico', 'no uso mail', 'no uso correo electronico', 'no lo recuerdo', 'no me acuerdo', 'no tengo', 'no uso'] mandalo al nodo 4.
-                                                            Pero si dice algo parecido a algun valor de esta lista ['necesito refinanciar', 'quiero refinanciar', 'refinanciacion', 'acuerdo', 'a cuenta', 'necesito cuotas', 'necesito un plan de pagos', 'plan en cuotas', 'cuotas'] es el nodo 12.
-                                                            En cualquier otro caso devolve un -1
-                                                            ""},
-                            {"role": "user", "content": f"A que se nodo iria este mensaje {mensaje}?"}
-                        ],
-            	        response_format=Nodo,
-                        temperature=0.7
-                    )
-    nodo = completion.choices[0].message.parsed.numero_nodo
-    if nodo == -1:
-        return None
-    return str(nodo)
-
-def no_sirven_cuotas(mensaje):
-    completion = client.beta.chat.completions.parse(
-                        model="gpt-4o-2024-08-06",
-                        messages=[
-                            {"role": "system", "content": ""Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
-                                                            Si dice algo parecido a esta lista: ['no me sirven esas cuotas', 'no me sirven estas cuotas', 'necesito mas cuotas', 'no puedo pagar esos montos'] devolve el nodo 16.
-                                                            En cualquier otro caso devolve un -1
-                                                            ""},
-                            {"role": "user", "content": f"A que se nodo iria este mensaje {mensaje}?"}
-                        ],
-            	        response_format=Nodo,
-                        temperature=0.7
-                    )
-    nodo = completion.choices[0].message.parsed.numero_nodo
-    if nodo == -1:
-        return None
-    return str(nodo)
-
-def no_sirve_fecha(mensaje):
-    completion = client.beta.chat.completions.parse(
-                        model="gpt-4o-2024-08-06",
-                        messages=[
-                            {"role": "system", "content": ""Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
-                                                            Si dice algo parecido a esta lista: ['no cobro en esa fecha', 'no puedo pagar en esa fecha', 'no me sirve esa fecha', 'no tengo plata en esa fecha'] devolve el nodo 14.
-                                                            En cualquier otro caso devolve un -1
-                                                            ""},
-                            {"role": "user", "content": f"A que se nodo iria este mensaje {mensaje}?"}
-                        ],
-            	        response_format=Nodo,
-                        temperature=0.7
-                    )
-    nodo = completion.choices[0].message.parsed.numero_nodo
-    if nodo == -1:
-        return None
-    return str(nodo)"""
 
 def preguntar_salto(mensaje, cuotas_dadas, fecha_dada):
 
@@ -250,7 +195,6 @@ def preguntar_salto(mensaje, cuotas_dadas, fecha_dada):
 
     # Si todos son None, devolverá None automáticamente
     return None
-
 
 
 
