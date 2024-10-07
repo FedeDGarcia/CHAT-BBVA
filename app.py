@@ -160,6 +160,21 @@ def modificar_telefono(numero_telefono, dni, campo='telefono2'):
 class Nodo(BaseModel):
     numero_nodo: int
 
+def llamar_GPT(mensaje, prompt):
+    completion = client.beta.chat.completions.parse(
+                        model=config['modelo_GPT'],
+                        messages=[
+                            {"role": "system", "content": config[prompt]},
+                            {"role": "user", "content": f"A que se nodo iria este mensaje {mensaje}?"}
+                        ],
+            	        response_format=Nodo,
+                        temperature=0.7
+                    )
+    nodo = completion.choices[0].message.parsed.numero_nodo
+    if nodo == -1:
+        return None
+    return str(nodo)
+
 def preguntar_salto_aux(mensaje):
     completion = client.beta.chat.completions.parse(
                         model="gpt-4o-2024-08-06",
@@ -226,7 +241,7 @@ def preguntar_salto(mensaje, cuotas_dadas, fecha_dada):
         salto2 = no_sirven_cuotas(mensaje)
         if salto2 is not None:
             return salto2
-    
+
     if fecha_dada:
         salto3 = no_sirve_fecha(mensaje)
         if salto3 is not None:
@@ -242,7 +257,7 @@ def preguntar_salto(mensaje, cuotas_dadas, fecha_dada):
 async def respuesta(state: ActualState):
     try:
         nodo = str(state.nodo)
-        
+
         if nodo in ['15', '17']:
             cuotas_dadas = True
         else:
@@ -255,7 +270,7 @@ async def respuesta(state: ActualState):
 
 
         salto = preguntar_salto(state.mensaje, cuotas_dadas, fecha_dada)
-        
+
         if salto:
             proximo_nodo = salto
 
