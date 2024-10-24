@@ -12,6 +12,7 @@ import unidecode
 from datetime import datetime
 from pydantic import BaseModel
 from openai import OpenAI
+from pandas.tseries.offsets import MonthEnd
 
 app = FastAPI()
 
@@ -90,15 +91,53 @@ def verificar_mes_actual(fecha: str, dni: str):
 def verificar_fecha(fecha: str, dni: str):
     if fecha == '1' or unidecode.unidecode(fecha.lower()) == 'si':
         fecha = dame_fecha_limite(dni)
-    elif fecha == '2' or unidecode.unidecode(fecha.lower()) == 'no':
+    if fecha == '2' or unidecode.unidecode(fecha.lower()) == 'no':
+        modificar_csv('fecha_de_pago', None, dni)
+        modificar_csv('ESTADO', 'No puede pagar', dni)
+        modificar_csv('monto_elegido', None, dni)
+        modificar_csv('cant_cuotas_elegido', None, dni)
         return False
     fecha_formateada = datetime.strptime(fecha, '%d/%m/%Y')
-    if fecha_formateada > datetime.today():
+    fecha_limite_2 = datetime.strptime(dame_fecha_limite_2(dni), '%d/%m/%Y')
+    if fecha_formateada >= datetime.today().date() and fecha_formateada <= fecha_limite_2:
         modificar_csv('fecha_de_pago', fecha, dni)
         modificar_csv('ESTADO', 'Compromete fecha', dni)
+
         return True
     else:
+        modificar_csv('fecha_de_pago', None, dni)
+        modificar_csv('ESTADO', 'No puede pagar', dni)
+        modificar_csv('monto_elegido', None, dni)
+        modificar_csv('cant_cuotas_elegido', None, dni)
         raise Exception('fecha incorrecta')
+    
+def verificar_fecha_un_pago(fecha: str, dni: str):
+    if fecha == '1' or unidecode.unidecode(fecha.lower()) == 'si':
+        fecha = dame_fecha_limite(dni)
+    elif fecha == '2' or unidecode.unidecode(fecha.lower()) == 'no':
+        modificar_csv('fecha_de_pago', None, dni)
+        modificar_csv('ESTADO', 'No puede pagar', dni)
+        modificar_csv('monto_elegido', None, dni)
+        modificar_csv('cant_cuotas_elegido', None, dni)
+        return False
+    # Convertir la fecha ingresada y la fecha límite a objetos datetime.date()
+    fecha_formateada = datetime.strptime(fecha, '%d/%m/%Y').date()
+    fecha_limite_2 = datetime.strptime(dame_fecha_limite_2(dni), '%d/%m/%Y').date()
+    # Verificar que la fecha_formateada sea mayor o igual que la fecha actual y menor o igual a fecha_limite_2
+    if fecha_formateada >= datetime.today().date() and fecha_formateada <= fecha_limite_2:
+        modificar_csv('fecha_de_pago', fecha, dni)
+        modificar_csv('ESTADO', 'Compromete fecha', dni)
+        oferta = leer_xlsx('OFERTA CANCELATORIA ', dni)
+        modificar_csv('monto_elegido', oferta, dni)
+        modificar_csv('cant_cuotas_elegido', 1, dni)
+        return True
+    else:
+        modificar_csv('fecha_de_pago', None, dni)
+        modificar_csv('ESTADO', 'No puede pagar', dni)
+        modificar_csv('monto_elegido', None, dni)
+        modificar_csv('cant_cuotas_elegido', None, dni)
+        raise Exception('fecha incorrecta')
+
 
 def dame_deuda(dni: str, *args):
     return leer_xlsx('DEUDA_TOTAL', dni)
@@ -111,8 +150,34 @@ def dame_oferta(dni: str, *args):
     return '{0:.2f}'.format(oferta)
 
 def dame_fecha_limite(dni: str, *args):
-    cantidad_dias = int(config['cantidad_dias'])
-    fecha_limite = pd.Timestamp(datetime.today()) + calendario_con_feriados * cantidad_dias
+    cantidad_dias = int(config['cantidad_dias_primer_oferta'])
+    fecha_actual = pd.Timestamp(datetime.today())
+    fecha_limite = fecha_actual + calendario_con_feriados * cantidad_dias
+        # Comprobar si la fecha límite cae en un mes diferente al mes actual
+    if fecha_limite.month != fecha_actual.month:
+        # Encontrar el último día hábil del mes actual
+        ultimo_dia_mes = (fecha_actual + MonthEnd(0)).normalize()
+        # Buscar el último día hábil antes o en el último día del mes
+        while ultimo_dia_mes.weekday() >= 5 or ultimo_dia_mes in pd.to_datetime(feriados):
+            ultimo_dia_mes -= pd.Timedelta(days=1)
+        # Actualizar la fecha límite al último día hábil del mes actual
+        fecha_limite = ultimo_dia_mes
+    return fecha_limite.date().strftime('%d/%m/%Y')
+
+def dame_fecha_limite_2(dni: str, *args):
+    fecha_actual = pd.Timestamp(datetime.today())
+    # Calcular la fecha límite sumando 7 días corrientes
+    fecha_limite = fecha_actual + pd.Timedelta(days=7)
+    # Comprobar si la fecha límite cae en un mes diferente al mes actual
+    if fecha_limite.month != fecha_actual.month:
+        # Encontrar el último día del mes actual
+        ultimo_dia_mes = (fecha_actual + MonthEnd(0)).normalize()
+        # Buscar el último día hábil antes o en el último día del mes
+        while ultimo_dia_mes.weekday() >= 5 or ultimo_dia_mes in pd.to_datetime(feriados):
+            ultimo_dia_mes -= pd.Timedelta(days=1)
+        # Actualizar la fecha límite al último día hábil del mes actual
+        fecha_limite = ultimo_dia_mes
+    # Formatear la fecha al formato 'dd/mm/yyyy'
     return fecha_limite.date().strftime('%d/%m/%Y')
 
 def dame_planes(dni: str, *args):
@@ -176,22 +241,32 @@ def llamar_GPT(mensaje, prompt):
         return None
     return str(nodo)
 
-def preguntar_salto(mensaje, cuotas_dadas, fecha_dada):
+def preguntar_salto(mensaje, mail_pedido, cuotas_dadas, fecha_dada_un_pago, fecha_dada_cuotas):
 
-    if not cuotas_dadas:
+    if mail_pedido:
         salto = llamar_GPT(mensaje, "0")
         if salto is not None:
             return salto
 
+    if not cuotas_dadas:
+        salto = llamar_GPT(mensaje, "1")
+        if salto is not None:
+            return salto
+
     if cuotas_dadas:
-        salto2 = llamar_GPT(mensaje, "1")
+        salto2 = llamar_GPT(mensaje, "2")
         if salto2 is not None:
             return salto2
 
-    if fecha_dada:
-        salto3 = llamar_GPT(mensaje, "2")
+    if fecha_dada_un_pago:
+        salto3 = llamar_GPT(mensaje, "3")
         if salto3 is not None:
             return salto3
+
+    if fecha_dada_cuotas:
+        salto4 = llamar_GPT(mensaje, "4")
+        if salto4 is not None:
+            return salto4
 
     # Si todos son None, devolverá None automáticamente
     return None
@@ -203,18 +278,27 @@ async def respuesta(state: ActualState):
     try:
         nodo = str(state.nodo)
 
+        if nodo in ['3']:
+            mail_pedido = True
+        else:
+            mail_pedido = False
+
         if nodo in ['15', '17']:
             cuotas_dadas = True
         else:
             cuotas_dadas = False
 
-        if int(nodo) >= 6 and int(nodo) not in [7, 8, 10, 20]:
-            fecha_dada = True
+        if nodo in ['6', '11']:
+            fecha_dada_un_pago = True
         else:
-            fecha_dada = False
+            fecha_dada_un_pago = False
 
+        if nodo in ['15', '17']:
+            fecha_dada_cuotas = True
+        else:
+            fecha_dada_cuotas = False
 
-        salto = preguntar_salto(state.mensaje, cuotas_dadas, fecha_dada)
+        salto = preguntar_salto(state.mensaje, mail_pedido, cuotas_dadas, fecha_dada_un_pago, fecha_dada_cuotas)
 
         if salto:
             proximo_nodo = salto
