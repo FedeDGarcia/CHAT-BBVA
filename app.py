@@ -97,8 +97,8 @@ def verificar_fecha(fecha: str, dni: str):
         modificar_csv('monto_elegido', None, dni)
         modificar_csv('cant_cuotas_elegido', None, dni)
         return False
-    fecha_formateada = datetime.strptime(fecha, '%d/%m/%Y')
-    fecha_limite_2 = datetime.strptime(dame_fecha_limite_2(dni), '%d/%m/%Y')
+    fecha_formateada = datetime.strptime(fecha, '%d/%m/%Y').date()
+    fecha_limite_2 = datetime.strptime(dame_fecha_limite_2(dni), '%d/%m/%Y').date()
     if fecha_formateada >= datetime.today().date() and fecha_formateada <= fecha_limite_2:
         modificar_csv('fecha_de_pago', fecha, dni)
         modificar_csv('ESTADO', 'Compromete fecha', dni)
@@ -109,7 +109,7 @@ def verificar_fecha(fecha: str, dni: str):
         modificar_csv('ESTADO', 'No puede pagar', dni)
         modificar_csv('monto_elegido', None, dni)
         modificar_csv('cant_cuotas_elegido', None, dni)
-        raise Exception('fecha incorrecta')
+        return False
     
 def verificar_fecha_un_pago(fecha: str, dni: str):
     if fecha == '1' or unidecode.unidecode(fecha.lower()) == 'si':
@@ -136,7 +136,7 @@ def verificar_fecha_un_pago(fecha: str, dni: str):
         modificar_csv('ESTADO', 'No puede pagar', dni)
         modificar_csv('monto_elegido', None, dni)
         modificar_csv('cant_cuotas_elegido', None, dni)
-        raise Exception('fecha incorrecta')
+        return False
 
 
 def dame_deuda(dni: str, *args):

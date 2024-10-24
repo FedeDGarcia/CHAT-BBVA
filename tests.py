@@ -28,7 +28,6 @@ def verificar_valor(dni, campo, valor_esperado):
 def requestAPI(payload):
     response = requests.post(url, data=json.dumps(payload), headers=headers)
     respuesta_json = json.loads(response.text)
-    #print(respuesta_json)
     return respuesta_json['respuesta'].strip('"'), respuesta_json['nodo']
 
 class Nodo0(unittest.TestCase):
@@ -392,10 +391,10 @@ class Nodo14(unittest.TestCase):
         fecha_hoy = datetime.today()
         fecha_pasada = fecha_hoy - timedelta(days=1000)
         fecha_pasada = fecha_pasada.strftime("%d/%m/%Y")
-        payload = {'nodo': 14, 'dni': dni_valido, 'mensaje': fecha_pasada}
+        payload = {'nodo': 14, 'dni': dni_valido, 'mensaje': '22/10/2024'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'payload invalido')
-        self.assertEqual(response[1], -1)
+        self.assertEqual(response[0], 'Entiendo, en un futuro podamos enviarte mejoras en tu oferta cancelatoria...\nTe voy a pedir un teléfono de contacto alternativo de la siguiente manera: Código de país (+54 para Argentina) + 9 + Código de área sin 0 + Número de celular sin 15, separando cada parte con un espacio\nEjemplos:\n  * +54 9 11 1234-5678\n  * +54 9 221 234-5678\n  * +54 9 2202 34-5678\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
         #self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'No puede pagar'))
 
     def test_fecha_futura(self):
@@ -555,6 +554,20 @@ class Nodo19(unittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response[0], 'payload invalido')
         self.assertEqual(response[1], -1)
+
+class Nodo21(unittest.TestCase):
+    def test_fecha_invalida(self):
+        payload = {'nodo': 21, 'dni': dni_valido, 'mensaje': '22/10/2024'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Entiendo, en un futuro podamos enviarte mejoras en tu oferta cancelatoria...\nTe voy a pedir un teléfono de contacto alternativo de la siguiente manera: Código de país (+54 para Argentina) + 9 + Código de área sin 0 + Número de celular sin 15, separando cada parte con un espacio\nEjemplos:\n  * +54 9 11 1234-5678\n  * +54 9 221 234-5678\n  * +54 9 2202 34-5678\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
+
+    def test_fecha_valida(self):
+        payload = {'nodo': 21, 'dni': dni_valido, 'mensaje': '25/10/2024'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: $15026.60 (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
+        self.assertEqual(response[1], '13')
+
 
 class Telefono(unittest.TestCase):
     url = 'http://localhost:3000/telefono'
