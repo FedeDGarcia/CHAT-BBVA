@@ -345,27 +345,47 @@ async def telefono(telefono: Telefono):
 @app.post('/subir_xlsx')
 async def subir_planilla(file: UploadFile = File(...)):
     try:
+        # Verificar tipo de archivo
         if file.content_type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
             raise Exception('Bad content type, must be application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+        # Leer y guardar archivo temporalmente
         contents = file.file.read()
         with open(config['planilla_entrada'], 'wb') as f:
             f.write(contents)
+
+        # Cargar la planilla en un DataFrame
         df = pd.read_excel(config['planilla_entrada'])
+        # Eliminar filas con valores nulos en las columnas específicas
         df = df.dropna(subset=['DNI', 'ESTADO', 'DEUDA_TOTAL', 'NOMBRE', 'CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3', 'OFERTA CANCELATORIA '])
         df.to_excel(config['planilla_entrada'], index=False)
+
+        # Añadir columnas adicionales en blanco
         df['telefono'] = None
         df['fecha_de_pago'] = None
         df['cant_cuotas_elegido'] = None
         df['monto_elegido'] = None
         df['telefono2'] = None
+
+        # Leer el archivo de salida existente y preparar para actualización
         df_original = pd.read_csv(config['planilla_salida'])
-        df_sin_filas_viejas = df[~df['DNI'].isin(df_original['DNI'])]
-        df = pd.concat([df_original, df_sin_filas_viejas], ignore_index=True)
-        df.to_csv(config['planilla_salida'], index=False)
+        
+        # Separar registros con DNIs comunes y nuevos
+        df_comunes = df[df['DNI'].isin(df_original['DNI'])]
+        df_nuevos = df[~df['DNI'].isin(df_original['DNI'])]
+
+        # Actualizar registros comunes en el archivo original
+        df_original.update(df_comunes)
+
+        # Combinar los registros actualizados con los nuevos
+        df_final = pd.concat([df_original, df_nuevos], ignore_index=True)
+        df_final.to_csv(config['planilla_salida'], index=False)
+
         texto = 'OK'
     except Exception as e:
         texto = f"payload invalido, {e}"
     return {'respuesta': texto}
+
 
 @app.get('/bajar_csv')
 async def bajar_planilla():
