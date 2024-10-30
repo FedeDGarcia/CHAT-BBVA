@@ -40,8 +40,15 @@ class Nodo0(unittest.TestCase):
     def test_dni_invalido(self):
         payload = {'nodo': 0, 'mensaje': dni_invalido, 'dni': dni_invalido}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Hoy no tenemos asignada una deuda con tu número de DNI...\nIndicanos por favor el número de DNI DEL TITULAR DE LA CUENTA')
+        self.assertEqual(response[0], 'Hoy no tenemos asignada una deuda con tu número de DNI...\nIndicanos por favor el número de DNI DEL TITULAR DE LA CUENTA, sin puntos ni espacios por favor.')
         self.assertEqual(response[1], '1')
+
+    def test_dni_mal_escrito(self):
+        payload = {'nodo': 0, 'mensaje': '43 087 737', 'dni': dni_valido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], "Por favor enviar el DNI sin puntos ni espacios")
+        self.assertEqual(response[1], '22')
+
 
 class Nodo1(unittest.TestCase):
     def test_dni_valido(self):
@@ -55,6 +62,12 @@ class Nodo1(unittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Al momento en CDN no tenemos asignada tu deuda, por favor contactate con BBVA al 0800-999-2282 DE LUNES A VIERNES DE 10 A 15 HS')
         self.assertEqual(response[1], '2')
+
+    def test_dni_mal_escrito(self):
+        payload = {'nodo': 1, 'mensaje': '43 087 737', 'dni': dni_valido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], "Por favor enviar el DNI sin puntos ni espacios")
+        self.assertEqual(response[1], '23')
 
 class Nodo2(unittest.TestCase):
     def test_terminar(self):
@@ -72,10 +85,10 @@ class Nodo3(unittest.TestCase):
         self.assertTrue(verificar_valor(dni_valido, 'MAIL2', 'prueba@gmail.com'))
 
     def test_mail_invalido(self):
-        payload = {'nodo': 3, 'mensaje': 'blabla', 'dni': dni_valido}
+        payload = {'nodo': 3, 'mensaje': 'tuki', 'dni': dni_valido}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'payload invalido')
-        self.assertEqual(response[1], -1)
+        self.assertEqual(response[0], 'URO ROCIO MARCELA Un gusto saludarte!\nTe pedimos que nos facilites un correo electrónico para continuar con la gestión')
+        self.assertEqual(response[1], '3')
 
     def test_no_tiene_mail(self):
         payload = {'nodo': 3, 'mensaje': 'No tengo mail', 'dni': dni_valido}
@@ -133,7 +146,7 @@ class Nodo4(unittest.TestCase):
     def test_opciones_pago(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria , cancelás por $15026.60 ¿Ves factible abonar esto al 29/10/2024?\n1) SI\n2) NO')
+        self.assertEqual(response[0], 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria , cancelás por $15026.60 ¿Ves factible abonar esto al 31/10/2024?\n1) SI\n2) NO')
         self.assertEqual(response[1], '6')
         #payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': 'Quiero conocer mis opciones de pago'}
         #response = requestAPI(payload)
@@ -222,11 +235,11 @@ class Nodo6(unittest.TestCase):
     def test_acepta(self):
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 29/10/2024. ¿Confirma?\n1) SI\n2) NO')
+        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 31/10/2024. ¿Confirma?\n1) SI\n2) NO')
         self.assertEqual(response[1], '11')
         payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'Sí'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 29/10/2024. ¿Confirma?\n1) SI\n2) NO')
+        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 31/10/2024. ¿Confirma?\n1) SI\n2) NO')
         self.assertEqual(response[1], '11')
 
     def test_no_acepta(self):
@@ -288,7 +301,7 @@ class Nodo6(unittest.TestCase):
         self.assertEqual(response[1], -1)
 
     def test_pide_otra_fecha(self):
-        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'No puedo pagar en esa fecha'}
+        payload = {'nodo': 6, 'dni': dni_valido, 'mensaje': 'NO PUEDO EN ESA FECHA'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Indicanos en que fecha ves factible abonar tu deuda con BBVA en el siguiente formato\nEJ: 02/03/2024\nLa fecha límite que te podemos ofrecer es: 31/10/2024.')
         self.assertEqual(response[1], '14')
@@ -327,13 +340,13 @@ class Nodo11(unittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: $15026.60 (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
-        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '29/10/2024'))
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '31/10/2024'))
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
         payload = {'nodo': 11, 'dni': dni_valido, 'mensaje': 'Sí'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: $15026.60 (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
-        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '29/10/2024'))
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '31/10/2024'))
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
 
     def test_no_confirma(self):
@@ -403,8 +416,8 @@ class Nodo14(unittest.TestCase):
         fecha_futura = fecha_futura.strftime("%d/%m/%Y")
         payload = {'nodo': 14, 'dni': dni_valido, 'mensaje': fecha_futura}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'payload invalido')
-        self.assertEqual(response[1], -1)
+        self.assertEqual(response[0], 'Entiendo, en un futuro podamos enviarte mejoras en tu oferta cancelatoria...\nTe voy a pedir un teléfono de contacto alternativo de la siguiente manera: Código de país (+54 para Argentina) + 9 + Código de área sin 0 + Número de celular sin 15, separando cada parte con un espacio\nEjemplos:\n  * +54 9 11 1234-5678\n  * +54 9 221 234-5678\n  * +54 9 2202 34-5678\nTe brindamos además nuestro horario de atención es de lunes a viernes de 09 a 20 hs y te podes contactar con nosotros al 0800 220 0059 o por mail cdncobranzas@companiadelnorte.com')
+        self.assertEqual(response[1], '16')
         #self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'No puede pagar'))
 
     def test_fecha_mal_formateada(self):
@@ -434,7 +447,7 @@ class Nodo15(unittest.TestCase):
     def test_elige_opcion_pago(self):
         payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 29/10/2024.\n¿Confirma?\n1) SI\n2) NO')
+        self.assertEqual(response[0], 'Perfecto, entonces el pago deberá realizarse antes de 31/10/2024.\n¿Confirma?\n1) SI\n2) NO')
         self.assertEqual(response[1], '17')
         #self.assertTrue(verificar_valor(dni_valido, 'cant_cuotas_elegido', 2))
         #self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 6010.638452))
@@ -488,15 +501,13 @@ class Nodo16(unittest.TestCase):
 class Nodo17(unittest.TestCase):
     maxDiff = None
     def test_confirma(self):
-        payload = {'nodo': 15, 'dni': dni_valido, 'mensaje': '1'}
-        response = requestAPI(payload)
         payload = {'nodo': 17, 'dni': dni_valido, 'mensaje': 'Sí'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: $6010.64 (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
         self.assertTrue(verificar_valor(dni_valido, 'cant_cuotas_elegido', 2))
         self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 6010.638452))
-        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '29/10/2024'))
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '31/10/2024'))
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
         payload = {'nodo': 17, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
@@ -504,7 +515,7 @@ class Nodo17(unittest.TestCase):
         self.assertEqual(response[1], '13')
         self.assertTrue(verificar_valor(dni_valido, 'cant_cuotas_elegido', 2))
         self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 6010.638452))
-        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '29/10/2024'))
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '31/10/2024'))
         self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
 
     def test_no_confirma(self):
@@ -533,7 +544,7 @@ class Nodo18(unittest.TestCase):
     def test_reiniciar(self):
         payload = {'nodo': 18, 'dni': dni_valido, 'mensaje': 'blabla'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Hola! Soy Mora, el asistente virtual de CDN. ¿Me dirías tu número de DNI?')
+        self.assertEqual(response[0], 'Hola! Soy Mora, el asistente virtual de CDN. ¿Me darías tu número de DNI sin puntos ni espacios?')
         self.assertEqual(response[1], '0')
 
     def test_dni_invalido(self):
@@ -563,11 +574,48 @@ class Nodo21(unittest.TestCase):
         self.assertEqual(response[1], '16')
 
     def test_fecha_valida(self):
-        payload = {'nodo': 21, 'dni': dni_valido, 'mensaje': '25/10/2024'}
+        payload = {'nodo': 21, 'dni': dni_valido, 'mensaje': '31/10/2024'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: $15026.60 (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
 
+class Nodo22(unittest.TestCase):
+    def test_dni_mal_escrito(self):
+        payload = {'nodo': 22, 'dni': dni_valido, 'mensaje': '45.225.555'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], "Por favor enviar el DNI sin puntos ni espacios")
+        self.assertEqual(response[1], '22')
+
+    def test_dni_valido(self):
+        payload = {'nodo': 22, 'mensaje': dni_valido, 'dni': dni_valido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'URO ROCIO MARCELA Un gusto saludarte!\nTe pedimos que nos facilites un correo electrónico para continuar con la gestión')
+        self.assertEqual(response[1], '3')
+
+    def test_dni_invalido(self):
+        payload = {'nodo': 22, 'mensaje': dni_invalido, 'dni': dni_invalido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Hoy no tenemos asignada una deuda con tu número de DNI...\nIndicanos por favor el número de DNI DEL TITULAR DE LA CUENTA, sin puntos ni espacios por favor.')
+        self.assertEqual(response[1], '1')
+
+class Nodo23(unittest.TestCase):
+    def test_dni_mal_escrito(self):
+        payload = {'nodo': 23, 'dni': dni_valido, 'mensaje': '45.225.555'}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], "Por favor enviar el DNI sin puntos ni espacios")
+        self.assertEqual(response[1], '23')
+
+    def test_dni_valido(self):
+        payload = {'nodo': 23, 'mensaje': dni_valido, 'dni': dni_valido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'URO ROCIO MARCELA Un gusto saludarte!\nTe pedimos que nos facilites un correo electrónico para continuar con la gestión')
+        self.assertEqual(response[1], '3')
+
+    def test_dni_invalido(self):
+        payload = {'nodo': 23, 'mensaje': dni_invalido, 'dni': dni_invalido}
+        response = requestAPI(payload)
+        self.assertEqual(response[0], 'Al momento en CDN no tenemos asignada tu deuda, por favor contactate con BBVA al 0800-999-2282 DE LUNES A VIERNES DE 10 A 15 HS')
+        self.assertEqual(response[1], '2')
 
 class Telefono(unittest.TestCase):
     url = 'http://localhost:3000/telefono'

@@ -12,7 +12,8 @@ prompts:
   0: |-
      Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
      Si dice algo de esta lista: ['no tengo mail', 'no tengo correo electronico', 'no uso mail', 'no uso correo electronico', 'no lo recuerdo', 'no me acuerdo', 'no tengo', 'no uso', 'no quiero pasartelo', 'no quiero', 'no'] mandalo al nodo 4.
-
+     En cualquier otro caso devolve un -1
+  
   1: |-
      Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
      Pero si dice algo parecido a algun valor de esta lista ['necesito refinanciar', 'quiero refinanciar', 'refinanciacion', 'acuerdo', 'a cuenta', 'necesito cuotas', 'necesito un plan de pagos', 'plan en cuotas', 'cuotas'] es el nodo 12.
@@ -25,30 +26,33 @@ prompts:
 
   3: |-
      Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
-     Si dice algo parecido a esta lista: ['no cobro en esa fecha', 'no puedo pagar en esa fecha', 'no me sirve esa fecha', 'no tengo plata en esa fecha'] devolve el nodo 14.
+     Si dice algo parecido a esta lista: ['no cobro en esa fecha', 'no puedo en esa fecha', 'no puedo pagar en esa fecha', 'no me sirve esa fecha', 'no tengo plata en esa fecha'] devolve el nodo 14.
      En cualquier otro caso devolve un -1
+     
   4: |-
      Eres un asistente que sabe diferenciar bien los pedidos de una persona que interactua con un chat. Ese chat tiene un arbol de dependencias, yo te lo voy a preguntar solamente por algunos saltos.
-     Si dice algo parecido a esta lista: ['no cobro en esa fecha', 'no puedo pagar en esa fecha', 'no me sirve esa fecha', 'no tengo plata en esa fecha'] devolve el nodo 21.
+     Si dice algo parecido a esta lista: ['no cobro en esa fecha', 'no puedo en esa fecha', 'no puedo pagar en esa fecha', 'no me sirve esa fecha', 'no tengo plata en esa fecha'] devolve el nodo 21.
      En cualquier otro caso devolve un -1
 
 mensajes:
   0:
-    texto: Hola! Soy Mora, el asistente virtual de CDN. ¿Me dirías tu número de DNI?
+    texto: Hola! Soy Mora, el asistente virtual de CDN. ¿Me darías tu número de DNI sin puntos ni espacios?
     siguientes:
       funcion: verificar_dni
       resultados:
         False: 1
         True: 3
+        mal escrito: 22
   1:
     texto: |-
       Hoy no tenemos asignada una deuda con tu número de DNI...
-      Indicanos por favor el número de DNI DEL TITULAR DE LA CUENTA
+      Indicanos por favor el número de DNI DEL TITULAR DE LA CUENTA, sin puntos ni espacios por favor.
     siguientes:
       funcion: verificar_dni
       resultados:
         False: 2
         True: 3
+        mal escrito: 23
   2:
     texto: Al momento en CDN no tenemos asignada tu deuda, por favor contactate con BBVA al 0800-999-2282 DE LUNES A VIERNES DE 10 A 15 HS
     siguientes:
@@ -63,9 +67,9 @@ mensajes:
     siguientes:
       funcion: verificar_correo
       resultados:
-        1 : 4
         False: 3
-        2 : 20
+        True: 4
+        promesa en curso: 20
   4:
     texto: |-
         ¡Muchas gracias!
@@ -275,4 +279,19 @@ mensajes:
       resultados:
         True: 13
         False: 16
-
+  22:
+    texto: "Por favor enviar el DNI sin puntos ni espacios"
+    siguientes:
+      funcion: verificar_dni
+      resultados:
+        False: 1
+        True: 3
+        mal escrito: 22
+  23:
+    texto: "Por favor enviar el DNI sin puntos ni espacios"
+    siguientes:
+      funcion: verificar_dni
+      resultados:
+        False: 2
+        True: 3
+        mal escrito: 23

@@ -52,19 +52,23 @@ def fin(parametro, *args):
     return 'fin'
 
 def verificar_dni(dni: str, *args):
-    dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
-    return dni in dnis['DNI'].values
+    if dni_mal_escrito(dni):
+        return 'mal escrito'
+    else:
+        dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
+        return dni in dnis['DNI'].values
 
 def verificar_correo(correo: str, dni: str):
+    respuesta = None
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
     if re.fullmatch(regex, correo) is None:
-        raise Exception('mail invalido')
+        respuesta = False
     else:
         modificar_csv('MAIL2', correo, dni)
-        respuesta = 1
+        respuesta = True
 
-        if leer_xlsx('ESTADO', dni) == 'PROMESA EN CURSO':
-            respuesta = 2
+    if leer_xlsx('ESTADO', dni) == 'PROMESA EN CURSO':
+        respuesta = 'promesa en curso'
     return respuesta
 
 def verificar_estado(opcion :str, dni:str):
@@ -223,6 +227,13 @@ def modificar_telefono(numero_telefono, dni, campo='telefono2'):
     else:
         raise Exception('Telefono invalido')
 
+def dni_mal_escrito(dni):
+    dni = dni.rstrip()  # Elimina los espacios al final del DNI
+    if "." in dni or " " in dni:
+        return True
+    else:
+        return False
+
 class Nodo(BaseModel):
     numero_nodo: int
 
@@ -271,8 +282,6 @@ def preguntar_salto(mensaje, mail_pedido, cuotas_dadas, fecha_dada_un_pago, fech
     # Si todos son None, devolverá None automáticamente
     return None
 
-
-
 @app.post('/respuesta')
 async def respuesta(state: ActualState):
     try:
@@ -307,7 +316,7 @@ async def respuesta(state: ActualState):
             funcion = mensajes[nodo]['siguientes']['funcion']
             decision = str(eval(funcion)(state.mensaje, state.dni))
             proximo_nodo = mensajes[nodo]['siguientes']['resultados'][decision]
-        if nodo not in ("0","1","2") and not verificar_dni(state.dni):
+        if nodo not in ("0","1","2","22","23") and not verificar_dni(state.dni):
             raise Exception('DNI invalido')
         if 'funcion' in mensajes[proximo_nodo].keys():
             valor_placeholder = eval(mensajes[proximo_nodo]['funcion'])(state.dni)
