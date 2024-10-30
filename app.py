@@ -110,7 +110,7 @@ def verificar_fecha(fecha: str, dni: str):
         modificar_csv('monto_elegido', None, dni)
         modificar_csv('cant_cuotas_elegido', None, dni)
         return False
-    
+
 def verificar_fecha_un_pago(fecha: str, dni: str):
     if fecha == '1' or unidecode.unidecode(fecha.lower()) == 'si':
         fecha = dame_fecha_limite(dni)
@@ -349,6 +349,9 @@ async def subir_planilla(file: UploadFile = File(...)):
         df['cant_cuotas_elegido'] = None
         df['monto_elegido'] = None
         df['telefono2'] = None
+        df_original = pd.read_csv(config['planilla_salida'])
+        df_sin_filas_viejas = df[~df['DNI'].isin(df_original['DNI'])]
+        df = pd.concat([df_original, df_sin_filas_viejas], ignore_index=True)
         df.to_csv(config['planilla_salida'], index=False)
         texto = 'OK'
     except Exception as e:
