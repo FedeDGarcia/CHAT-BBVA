@@ -369,16 +369,8 @@ async def subir_planilla(file: UploadFile = File(...)):
 
         # Leer el archivo de salida existente y preparar para actualización
         df_original = pd.read_csv(config['planilla_salida'])
-        
-        # Separar registros con DNIs comunes y nuevos
-        df_comunes = df[df['DNI'].isin(df_original['DNI'])]
-        df_nuevos = df[~df['DNI'].isin(df_original['DNI'])]
-
-        # Actualizar registros comunes en el archivo original
-        df_original.update(df_comunes)
-
-        # Combinar los registros actualizados con los nuevos
-        df_final = pd.concat([df_original, df_nuevos], ignore_index=True)
+        df_original = df_original[~df_original['DNI'].isin(df['DNI'])]
+        df_final = pd.concat([df_original, df], ignore_index=True)
         df_final.to_csv(config['planilla_salida'], index=False)
 
         texto = 'OK'
