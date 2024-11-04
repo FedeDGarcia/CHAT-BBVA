@@ -1,6 +1,7 @@
 planilla_entrada: variables_BBVA.xlsx
 planilla_salida: variables_BBVA.csv
-cantidad_dias_primer_oferta: 3
+cantidad_dias_primer_oferta: 2
+cantidad_dias_segunda_oferta: 6
 feriados:
   - 2024-07-09
   - 2024-10-11

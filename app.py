@@ -169,9 +169,10 @@ def dame_fecha_limite(dni: str, *args):
     return fecha_limite.date().strftime('%d/%m/%Y')
 
 def dame_fecha_limite_2(dni: str, *args):
+    cantidad_dias = int(config['cantidad_dias_segunda_oferta'])
     fecha_actual = pd.Timestamp(datetime.today())
     # Calcular la fecha límite sumando 7 días corrientes
-    fecha_limite = fecha_actual + pd.Timedelta(days=7)
+    fecha_limite = fecha_actual + pd.Timedelta(days= cantidad_dias)
     # Comprobar si la fecha límite cae en un mes diferente al mes actual
     if fecha_limite.month != fecha_actual.month:
         # Encontrar el último día del mes actual
