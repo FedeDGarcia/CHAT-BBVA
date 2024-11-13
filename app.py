@@ -58,6 +58,10 @@ def verificar_dni(dni: str, *args):
         dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
         return dni in dnis['DNI'].values
 
+def ya_tiene_promesa(dni: str):
+    estado = leer_csv('ESTADO', dni)
+    return estado in ['Compromete fecha', 'Promesa en curso']
+
 def verificar_correo(correo: str, dni: str):
     respuesta = None
     regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
@@ -66,9 +70,9 @@ def verificar_correo(correo: str, dni: str):
     else:
         modificar_csv('MAIL2', correo, dni)
         respuesta = True
-
-    if leer_xlsx('ESTADO', dni) == 'PROMESA EN CURSO':
+    if ya_tiene_promesa(dni):
         respuesta = 'promesa en curso'
+
     return respuesta
 
 def verificar_estado(opcion :str, dni:str):
@@ -253,11 +257,11 @@ def llamar_GPT(mensaje, prompt):
         return None
     return str(nodo)
 
-def preguntar_salto(mensaje, mail_pedido, cuotas_dadas, fecha_dada_un_pago, fecha_dada_cuotas):
+def preguntar_salto(mensaje, dni, mail_pedido, cuotas_dadas, fecha_dada_un_pago, fecha_dada_cuotas):
 
     if mail_pedido:
         salto = llamar_GPT(mensaje, "0")
-        if salto is not None:
+        if salto is not None and not ya_tiene_promesa(dni):
             return salto
 
     if not cuotas_dadas:
@@ -308,7 +312,7 @@ async def respuesta(state: ActualState):
         else:
             fecha_dada_cuotas = False
 
-        salto = preguntar_salto(state.mensaje, mail_pedido, cuotas_dadas, fecha_dada_un_pago, fecha_dada_cuotas)
+        salto = preguntar_salto(state.mensaje, state.dni, mail_pedido, cuotas_dadas, fecha_dada_un_pago, fecha_dada_cuotas)
 
         if salto:
             proximo_nodo = salto

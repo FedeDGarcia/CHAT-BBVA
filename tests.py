@@ -15,6 +15,7 @@ headers = {'Content-type': 'application/json'}
 
 dni_invalido = '12345678'
 dni_valido = '43527224'
+dni_con_promesa = '17780606'
 
 def verificar_valor(dni, campo, valor_esperado):
     df = pd.read_csv(config['planilla_salida'], dtype={'DNI': str})
@@ -127,7 +128,7 @@ class Nodo3(unittest.TestCase):
         self.assertEqual(response[1], '4')
 
     def test_tiene_promesa_en_curso(self):
-        payload = {'nodo': 3, 'mensaje': 'prueba@gmail.com', 'dni': dni_valido}
+        payload = {'nodo': 3, 'mensaje': 'prueba@gmail.com', 'dni': dni_con_promesa}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Al  momento vemos que tenes un acuerdo en curso.\nTe pedimos  que nos indiques la fecha de pago EJ: 01/03/2024\nY nos envies el archivo adjunto del comprobante para poder registrarlo')
         self.assertEqual(response[1], '20')
@@ -574,7 +575,7 @@ class Nodo21(unittest.TestCase):
         self.assertEqual(response[1], '16')
 
     def test_fecha_valida(self):
-        payload = {'nodo': 21, 'dni': dni_valido, 'mensaje': '31/10/2024'}
+        payload = {'nodo': 21, 'dni': dni_valido, 'mensaje': '13/11/2024'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: $15026.60 (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
