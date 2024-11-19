@@ -60,7 +60,8 @@ def verificar_dni(dni: str, *args):
 
 def ya_tiene_promesa(dni: str):
     estado = leer_csv('ESTADO', dni)
-    return estado in ['Compromete fecha', 'Promesa en curso']
+    resolucion = leer_csv('resolucion', dni)
+    return estado in ['Compromete fecha', 'Promesa en curso'] or resolucion in ['Compromete fecha', 'Promesa en curso']
 
 def verificar_correo(correo: str, dni: str):
     respuesta = None
@@ -84,14 +85,14 @@ def verificar_estado(opcion :str, dni:str):
         estado = 'DEFENSA DEL CONSUMIDOR'
     elif opcion == '5' or opcion == 'desconozco deuda' or opcion == 'no tengo deuda con bbva':
         estado = 'DESCONOCE DEUDA'
-    modificar_csv('ESTADO', estado, dni)
+    modificar_csv('resolucion', estado, dni)
     return unidecode.unidecode(opcion.lower())
 
 def verificar_mes_actual(fecha: str, dni: str):
     fecha = datetime.strptime(fecha, '%d/%m/%Y')
     mes_actual = datetime.today().strftime('%m/%Y')
     if fecha <= datetime.today() and fecha.strftime('%m/%Y') == mes_actual:
-        modificar_csv('ESTADO', 'Ya pagó', dni)
+        modificar_csv('resolucion', 'Ya pagó', dni)
         return True
     else:
         raise Exception('mes incorrecto')
@@ -101,7 +102,7 @@ def verificar_fecha(fecha: str, dni: str):
         fecha = dame_fecha_limite(dni)
     if fecha == '2' or unidecode.unidecode(fecha.lower()) == 'no':
         modificar_csv('fecha_de_pago', None, dni)
-        modificar_csv('ESTADO', 'No puede pagar', dni)
+        modificar_csv('resolucion', 'No puede pagar', dni)
         modificar_csv('monto_elegido', None, dni)
         modificar_csv('cant_cuotas_elegido', None, dni)
         return False
@@ -109,12 +110,12 @@ def verificar_fecha(fecha: str, dni: str):
     fecha_limite_2 = datetime.strptime(dame_fecha_limite_2(dni), '%d/%m/%Y').date()
     if fecha_formateada >= datetime.today().date() and fecha_formateada <= fecha_limite_2:
         modificar_csv('fecha_de_pago', fecha, dni)
-        modificar_csv('ESTADO', 'Compromete fecha', dni)
+        modificar_csv('resolucion', 'Compromete fecha', dni)
 
         return True
     else:
         modificar_csv('fecha_de_pago', None, dni)
-        modificar_csv('ESTADO', 'No puede pagar', dni)
+        modificar_csv('resolucion', 'No puede pagar', dni)
         modificar_csv('monto_elegido', None, dni)
         modificar_csv('cant_cuotas_elegido', None, dni)
         return False
@@ -124,7 +125,7 @@ def verificar_fecha_un_pago(fecha: str, dni: str):
         fecha = dame_fecha_limite(dni)
     elif fecha == '2' or unidecode.unidecode(fecha.lower()) == 'no':
         modificar_csv('fecha_de_pago', None, dni)
-        modificar_csv('ESTADO', 'No puede pagar', dni)
+        modificar_csv('resolucion', 'No puede pagar', dni)
         modificar_csv('monto_elegido', None, dni)
         modificar_csv('cant_cuotas_elegido', None, dni)
         return False
@@ -134,14 +135,14 @@ def verificar_fecha_un_pago(fecha: str, dni: str):
     # Verificar que la fecha_formateada sea mayor o igual que la fecha actual y menor o igual a fecha_limite_2
     if fecha_formateada >= datetime.today().date() and fecha_formateada <= fecha_limite_2:
         modificar_csv('fecha_de_pago', fecha, dni)
-        modificar_csv('ESTADO', 'Compromete fecha', dni)
+        modificar_csv('resolucion', 'Compromete fecha', dni)
         oferta = leer_xlsx('OFERTA CANCELATORIA ', dni)
         modificar_csv('monto_elegido', oferta, dni)
         modificar_csv('cant_cuotas_elegido', 1, dni)
         return True
     else:
         modificar_csv('fecha_de_pago', None, dni)
-        modificar_csv('ESTADO', 'No puede pagar', dni)
+        modificar_csv('resolucion', 'No puede pagar', dni)
         modificar_csv('monto_elegido', None, dni)
         modificar_csv('cant_cuotas_elegido', None, dni)
         return False
@@ -190,7 +191,7 @@ def dame_fecha_limite_2(dni: str, *args):
     return fecha_limite.date().strftime('%d/%m/%Y')
 
 def dame_planes(dni: str, *args):
-    lista = list(leer_xlsx(['CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3'], dni))
+    lista = list(leer_xlsx(['CANT  CUOTAS 1', 'MONTO CUOTA 1', 'CANT  CUOTAS 2', 'MONTO CUOTA 2', 'CANT  CUOTAS 3', 'MONTO CUOTA 3'], dni))
     lista = list(map(lambda x: int(x[1]) if x[0] % 2 == 0 else '{0:.2f}'.format(x[1]), enumerate(lista)))
     return lista
 
@@ -211,9 +212,9 @@ def confirma_pago(mensaje: str, dni: str):
     if mensaje == "1" or mensaje == 'si':
         fecha_limite = dame_fecha_limite(dni)
         modificar_csv('fecha_de_pago', fecha_limite, dni)
-        modificar_csv('ESTADO', 'Compromete fecha', dni)
+        modificar_csv('resolucion', 'Compromete fecha', dni)
     if mensaje == "2" or mensaje == 'no':
-        modificar_csv('ESTADO', 'No puede pagar', dni)
+        modificar_csv('resolucion', 'No puede pagar', dni)
         modificar_csv('cant_cuotas_elegido', None, dni)
         modificar_csv('monto_elegido', None, dni)
     return mensaje
@@ -221,7 +222,7 @@ def confirma_pago(mensaje: str, dni: str):
 def elegir_plan(mensaje: str, dni: str):
     if mensaje in ['1', '2', '3']:
         modificar_csv('cant_cuotas_elegido', leer_xlsx('CANT  CUOTAS '+mensaje, dni), dni)
-        modificar_csv('monto_elegido', leer_xlsx('MONTON CUOTA '+mensaje, dni), dni)
+        modificar_csv('monto_elegido', leer_xlsx('MONTO CUOTA '+mensaje, dni), dni)
         return "17"
 
 def modificar_telefono(numero_telefono, dni, campo='telefono2'):
@@ -350,32 +351,39 @@ async def telefono(telefono: Telefono):
 @app.post('/subir_xlsx')
 async def subir_planilla(file: UploadFile = File(...)):
     try:
-        # Verificar tipo de archivo
         if file.content_type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
             raise Exception('Bad content type, must be application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
-        # Leer y guardar archivo temporalmente
         contents = file.file.read()
         with open(config['planilla_entrada'], 'wb') as f:
             f.write(contents)
 
-        # Cargar la planilla en un DataFrame
         df = pd.read_excel(config['planilla_entrada'])
-        # Eliminar filas con valores nulos en las columnas específicas
-        df = df.dropna(subset=['DNI', 'ESTADO', 'DEUDA_TOTAL', 'NOMBRE', 'CANT  CUOTAS 1', 'MONTON CUOTA 1', 'CANT  CUOTAS 2', 'MONTON CUOTA 2', 'CANT  CUOTAS 3', 'MONTON CUOTA 3', 'OFERTA CANCELATORIA '])
+        columnas_necesarias = ['DNI', 'ESTADO', 'DEUDA_TOTAL', 'NOMBRE', 'CANT  CUOTAS 1', 
+                               'MONTO CUOTA 1', 'CANT  CUOTAS 2', 'MONTO CUOTA 2', 
+                               'CANT  CUOTAS 3', 'MONTO CUOTA 3', 'OFERTA CANCELATORIA ']
+        df = df.dropna(subset=columnas_necesarias)
         df.to_excel(config['planilla_entrada'], index=False)
 
-        # Añadir columnas adicionales en blanco
-        df['telefono'] = None
-        df['fecha_de_pago'] = None
-        df['cant_cuotas_elegido'] = None
-        df['monto_elegido'] = None
-        df['telefono2'] = None
+        nuevas_columnas = ['mail_nuevo', 'telefono', 'telefono2', 'resolucion', 
+                           'fecha_de_pago', 'cant_cuotas_elegido', 'monto_elegido']
+        for col in nuevas_columnas:
+            if col not in df.columns:
+                df[col] = None
 
-        # Leer el archivo de salida existente y preparar para actualización
+        # Leer el archivo de salida existente
         df_original = pd.read_csv(config['planilla_salida'])
-        df_original = df_original[~df_original['DNI'].isin(df['DNI'])]
-        df_final = pd.concat([df_original, df], ignore_index=True)
+
+        # Identificar registros con DNI repetidos
+        comunes = df_original[df_original['DNI'].isin(df['DNI'])].copy()
+        nuevos = df[~df['DNI'].isin(df_original['DNI'])]
+
+        # Mantener valores originales para DNIs repetidos
+        comunes_actualizados = comunes.set_index('DNI').combine_first(df.set_index('DNI')).reset_index()
+
+        # Concatenar los nuevos registros y los actualizados
+        df_final = pd.concat([comunes_actualizados, nuevos], ignore_index=True)
+
         df_final.to_csv(config['planilla_salida'], index=False)
 
         texto = 'OK'
@@ -386,7 +394,15 @@ async def subir_planilla(file: UploadFile = File(...)):
 
 @app.get('/bajar_csv')
 async def bajar_planilla():
-    return FileResponse(config['planilla_salida'])
+    df = pd.read_csv(config['planilla_salida'])
+    
+    for col in df.select_dtypes(include=['float', 'int']).columns:
+        df[col] = df[col].round(2)
+    
+    temp_file = 'planilla.csv'
+    df.to_csv(temp_file, index=False)
+    
+    return FileResponse(temp_file)
 
 if __name__ == '__main__':
     uvicorn.run(app, host='localhost', port=3000)
