@@ -61,7 +61,7 @@ def verificar_dni(dni: str, *args):
 def ya_tiene_promesa(dni: str):
     estado = leer_csv('ESTADO', dni)
     resolucion = leer_csv('resolucion', dni)
-    return estado in ['Compromete fecha', 'Promesa en curso'] or resolucion in ['Compromete fecha', 'Promesa en curso']
+    return estado.lower() in ['compromete fecha', 'promesa en curso'] or resolucion.lower in ['Compromete fecha', 'Promesa en curso']
 
 def verificar_correo(correo: str, dni: str):
     respuesta = None
@@ -69,7 +69,7 @@ def verificar_correo(correo: str, dni: str):
     if re.fullmatch(regex, correo) is None:
         respuesta = False
     else:
-        modificar_csv('MAIL2', correo, dni)
+        modificar_csv('mail_nuevo', correo, dni)
         respuesta = True
     if ya_tiene_promesa(dni):
         respuesta = 'promesa en curso'
