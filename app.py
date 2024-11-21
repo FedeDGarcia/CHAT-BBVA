@@ -61,7 +61,7 @@ def verificar_dni(dni: str, *args):
 def ya_tiene_promesa(dni: str):
     estado = leer_csv('ESTADO', dni)
     resolucion = leer_csv('resolucion', dni)
-    return estado.lower() in ['compromete fecha', 'promesa en curso'] or resolucion.lower in ['Compromete fecha', 'Promesa en curso']
+    return estado.lower() in ['compromete fecha', 'promesa en curso'] or resolucion.lower in ['compromete fecha', 'promesa en curso']
 
 def verificar_correo(correo: str, dni: str):
     respuesta = None
