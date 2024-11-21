@@ -15,7 +15,7 @@ headers = {'Content-type': 'application/json'}
 
 dni_invalido = '12345678'
 dni_valido = '43527224'
-dni_con_promesa = '17780606'
+dni_con_promesa = '31522565'
 
 def verificar_valor(dni, campo, valor_esperado):
     df = pd.read_csv(config['planilla_salida'], dtype={'DNI': str})
@@ -29,6 +29,7 @@ def verificar_valor(dni, campo, valor_esperado):
 def requestAPI(payload):
     response = requests.post(url, data=json.dumps(payload), headers=headers)
     respuesta_json = json.loads(response.text)
+    print(respuesta_json)
     return respuesta_json['respuesta'].strip('"'), respuesta_json['nodo']
 
 class Nodo0(unittest.TestCase):
@@ -147,7 +148,7 @@ class Nodo4(unittest.TestCase):
     def test_opciones_pago(self):
         payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': '2'}
         response = requestAPI(payload)
-        self.assertEqual(response[0], 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria , cancelás por $15026.60 ¿Ves factible abonar esto al 31/10/2024?\n1) SI\n2) NO')
+        self.assertEqual(response[0], 'Perfecto, hoy tenemos una oferta única para vos, con una quita extraordinaria , cancelás por $15026.60 ¿Ves factible abonar esto al 25/11/2024?\n1) SI\n2) NO')
         self.assertEqual(response[1], '6')
         #payload = {'nodo': 4, 'dni': dni_valido, 'mensaje': 'Quiero conocer mis opciones de pago'}
         #response = requestAPI(payload)
@@ -341,14 +342,14 @@ class Nodo11(unittest.TestCase):
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: $15026.60 (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
-        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '31/10/2024'))
-        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '25/11/2024'))
+        self.assertTrue(verificar_valor(dni_valido, 'resolucion', 'Compromete fecha'))
         payload = {'nodo': 11, 'dni': dni_valido, 'mensaje': 'Sí'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: $15026.60 (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
-        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '31/10/2024'))
-        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '25/11/2024'))
+        self.assertTrue(verificar_valor(dni_valido, 'resolucion', 'Compromete fecha'))
 
     def test_no_confirma(self):
         payload = {'nodo': 11, 'dni': dni_valido, 'mensaje': '2'}
@@ -508,16 +509,16 @@ class Nodo17(unittest.TestCase):
         self.assertEqual(response[1], '13')
         self.assertTrue(verificar_valor(dni_valido, 'cant_cuotas_elegido', 2))
         self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 6010.638452))
-        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '31/10/2024'))
-        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '24/11/2024'))
+        self.assertTrue(verificar_valor(dni_valido, 'resolucion', 'Compromete fecha'))
         payload = {'nodo': 17, 'dni': dni_valido, 'mensaje': '1'}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'Gracias, entonces registro tu compromiso de pago para esa fecha.\nEl importe deberá ser abonado, mediante depósito bancario en cualquier sucursal del BBVA, cajero automático del BBVA o transferencia bancaria:\nTe brindamos el paso a paso de como debes realizarlo en un cajero automático:\n1° PAGOS\n2° RECAUDACIONES\n3° EFECTIVO EN PESOS\n4° CODIGO DE SERVICIO: 4482\n5° NUMERO DE DEPOSITANTE. Por favor verificá de ingresar el DNI/CUIL/CUIT de la persona/empresa que adeuda.\n6° TOTAL A PAGAR: $6010.64 (Valor primera cuota)\n7° PARA TRANSFERENCIA A ICHTHYS S.R.L (Razón social)\nNUMERO: :331-422456/6 CUIT: 30715141627 CBU:0170331120000042245663\nUna vez que realices el pago por favor envia el comprobante por:\nWhatsapp: wa.link/bbva_estudiocdn\nEmail:\ncdncobranzas@companiadelnorte.com\nNuestro horario de recepción es de lunes a viernes de 09 a 17.30 hs\no bien te podes contactar con nosotros al 0800 220 0059\nSaludos.')
         self.assertEqual(response[1], '13')
         self.assertTrue(verificar_valor(dni_valido, 'cant_cuotas_elegido', 2))
         self.assertTrue(verificar_valor(dni_valido, 'monto_elegido', 6010.638452))
-        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '31/10/2024'))
-        self.assertTrue(verificar_valor(dni_valido, 'ESTADO', 'Compromete fecha'))
+        self.assertTrue(verificar_valor(dni_valido, 'fecha_de_pago', '24/11/2024'))
+        self.assertTrue(verificar_valor(dni_valido, 'resolucion', 'Compromete fecha'))
 
     def test_no_confirma(self):
         payload = {'nodo': 17, 'dni': dni_valido, 'mensaje': 'No'}
