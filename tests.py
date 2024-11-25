@@ -15,7 +15,7 @@ headers = {'Content-type': 'application/json'}
 
 dni_invalido = '12345678'
 dni_valido = '43527224'
-dni_con_promesa = '39020980'
+dni_con_promesa = '17780606'
 
 def verificar_valor(dni, campo, valor_esperado):
     df = pd.read_csv(config['planilla_salida'], dtype={'DNI': str})
@@ -34,7 +34,7 @@ def requestAPI(payload):
 
 class Nodo0(unittest.TestCase):
     def test_dni_valido(self):
-        payload = {'nodo': 0, 'mensaje': dni_valido, 'dni': dni_con_promesa}
+        payload = {'nodo': 0, 'mensaje': dni_valido, 'dni': dni_valido}
         response = requestAPI(payload)
         self.assertEqual(response[0], 'URO ROCIO MARCELA Un gusto saludarte!\nTe pedimos que nos facilites un correo electrónico para continuar con la gestión')
         self.assertEqual(response[1], '3')
