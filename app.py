@@ -351,25 +351,33 @@ async def telefono(telefono: Telefono):
 @app.post('/subir_xlsx')
 async def subir_planilla(file: UploadFile = File(...)):
     try:
+        # Validar el tipo de contenido del archivo
         if file.content_type != 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':
-            raise Exception('Bad content type, must be application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            raise ValueError('El archivo debe ser de tipo application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
+        # Guardar el archivo subido
         contents = file.file.read()
         with open(config['planilla_entrada'], 'wb') as f:
             f.write(contents)
 
+        # Leer el archivo Excel
         df = pd.read_excel(config['planilla_entrada'])
         columnas_necesarias = ['DNI', 'ESTADO', 'DEUDA_TOTAL', 'NOMBRE', 'CANT  CUOTAS 1', 
                                'MONTO CUOTA 1', 'CANT  CUOTAS 2', 'MONTO CUOTA 2', 
                                'CANT  CUOTAS 3', 'MONTO CUOTA 3', 'OFERTA CANCELATORIA ']
-        df = df.dropna(subset=columnas_necesarias)
-        df.to_excel(config['planilla_entrada'], index=False)
 
+        # Validar columnas necesarias
+        faltantes = [col for col in columnas_necesarias if col not in df.columns]
+        if faltantes:
+            raise ValueError(f"Faltan columnas necesarias: {faltantes}")
+
+        # Eliminar filas con NaN en las columnas necesarias
+        df = df.dropna(subset=columnas_necesarias)
+
+        # Asegurar columnas adicionales
         nuevas_columnas = ['mail_nuevo', 'telefono', 'telefono2', 'resolucion', 
                            'fecha_de_pago', 'cant_cuotas_elegido', 'monto_elegido']
-        for col in nuevas_columnas:
-            if col not in df.columns:
-                df[col] = None
+        df = df.reindex(columns=df.columns.union(nuevas_columnas, sort=False), fill_value=None)
 
         # Leer el archivo de salida existente
         df_original = pd.read_csv(config['planilla_salida'])
@@ -378,26 +386,32 @@ async def subir_planilla(file: UploadFile = File(...)):
         comunes = df_original[df_original['DNI'].isin(df['DNI'])].copy()
         nuevos = df[~df['DNI'].isin(df_original['DNI'])]
 
-        # Mantener valores originales para DNIs repetidos
-        comunes_actualizados = comunes.set_index('DNI').combine_first(df.set_index('DNI')).reset_index()
+        # Actualizar registros comunes (manteniendo valores originales en 'nuevas_columnas')
+        comunes_actualizados = comunes.set_index('DNI')
+        df_actualizado = df.set_index('DNI')
 
-        # Concatenar los nuevos registros y los actualizados
-        df_final = pd.concat([comunes_actualizados, nuevos], ignore_index=True)
+        for col in nuevas_columnas:
+            if col in comunes_actualizados.columns:
+                comunes_actualizados[col] = comunes_actualizados[col].combine_first(df_actualizado[col])
 
+        # Combinar datos actualizados y nuevos
+        df_final = pd.concat([comunes_actualizados.reset_index(), nuevos], ignore_index=True)
+
+        # Guardar el resultado final
         df_final.to_csv(config['planilla_salida'], index=False)
 
         texto = 'OK'
     except Exception as e:
-        texto = f"payload invalido, {e}"
+        texto = f"Error procesando el archivo: {e}"
     return {'respuesta': texto}
-
 
 @app.get('/bajar_csv')
 async def bajar_planilla():
     df = pd.read_csv(config['planilla_salida'])
     
+    df_temp = df.copy()
     for col in df.select_dtypes(include=['float', 'int']).columns:
-        df[col] = df[col].round(2)
+        df_temp[col] = df_temp[col].round(2)
     
     temp_file = 'planilla.csv'
     df.to_csv(temp_file, index=False)
