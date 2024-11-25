@@ -36,12 +36,12 @@ class Telefono(BaseModel):
     dni: str
 
 def modificar_csv(campo, valor, dni):
-    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float})
+    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str})
     dnis.loc[dnis['DNI'] == dni, [campo]] = valor
     dnis.to_csv(config['planilla_salida'], index=False)
 
 def leer_csv(campo, dni):
-    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float})
+    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str})
     return dnis[dnis['DNI'] == dni][campo].values[0]
 
 def leer_xlsx(campo, dni):
