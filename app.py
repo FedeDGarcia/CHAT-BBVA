@@ -36,12 +36,12 @@ class Telefono(BaseModel):
     dni: str
 
 def modificar_csv(campo, valor, dni):
-    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str})
+    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float})
     dnis.loc[dnis['DNI'] == dni, [campo]] = valor
     dnis.to_csv(config['planilla_salida'], index=False)
 
 def leer_csv(campo, dni):
-    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str})
+    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float})
     return dnis[dnis['DNI'] == dni][campo].values[0]
 
 def leer_xlsx(campo, dni):
@@ -61,7 +61,7 @@ def verificar_dni(dni: str, *args):
 def ya_tiene_promesa(dni: str):
     estado = leer_csv('ESTADO', dni)
     resolucion = leer_csv('resolucion', dni)
-    return estado.lower() in ['compromete fecha', 'promesa en curso'] or resolucion.lower in ['compromete fecha', 'promesa en curso']
+    return estado.lower() in ['compromete fecha', 'promesa en curso'] or resolucion.lower() in ['compromete fecha', 'promesa en curso']
 
 def verificar_correo(correo: str, dni: str):
     respuesta = None
