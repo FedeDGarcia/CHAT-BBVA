@@ -36,12 +36,12 @@ class Telefono(BaseModel):
     dni: str
 
 def modificar_csv(campo, valor, dni):
-    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float})
+    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float, 'ESTADO': str, 'resolucion': str})
     dnis.loc[dnis['DNI'] == dni, [campo]] = valor
     dnis.to_csv(config['planilla_salida'], index=False)
 
 def leer_csv(campo, dni):
-    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float})
+    dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float, 'ESTADO': str, 'resolucion': str})
     return dnis[dnis['DNI'] == dni][campo].values[0]
 
 def leer_xlsx(campo, dni):
@@ -60,7 +60,7 @@ def verificar_dni(dni: str, *args):
 
 def ya_tiene_promesa(dni: str):
     estado = leer_csv('ESTADO', dni)
-    resolucion = leer_csv('resolucion', dni)
+    resolucion = str(leer_csv('resolucion', dni))
     return estado.lower() in ['compromete fecha', 'promesa en curso'] or resolucion.lower() in ['compromete fecha', 'promesa en curso']
 
 def verificar_correo(correo: str, dni: str):
@@ -361,7 +361,7 @@ async def subir_planilla(file: UploadFile = File(...)):
             f.write(contents)
 
         # Leer el archivo Excel
-        df = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float})
+        df = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float, 'ESTADO': str, 'resolucion': str})
         columnas_necesarias = ['DNI', 'ESTADO', 'DEUDA_TOTAL', 'NOMBRE', 'CANT  CUOTAS 1', 
                                'MONTO CUOTA 1', 'CANT  CUOTAS 2', 'MONTO CUOTA 2', 
                                'CANT  CUOTAS 3', 'MONTO CUOTA 3', 'OFERTA CANCELATORIA ']

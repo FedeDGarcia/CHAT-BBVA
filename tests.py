@@ -15,7 +15,7 @@ headers = {'Content-type': 'application/json'}
 
 dni_invalido = '12345678'
 dni_valido = '43527224'
-dni_con_promesa = '17780606'
+dni_con_promesa = '32998467'
 
 def verificar_valor(dni, campo, valor_esperado):
     df = pd.read_csv(config['planilla_salida'], dtype={'DNI': str})
