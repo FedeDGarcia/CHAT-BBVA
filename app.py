@@ -55,7 +55,7 @@ def verificar_dni(dni: str, *args):
     if dni_mal_escrito(dni):
         return 'mal escrito'
     else:
-        dnis = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
+        dnis = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str})
         return dni in dnis['DNI'].values
 
 def ya_tiene_promesa(dni: str):
@@ -136,7 +136,7 @@ def verificar_fecha_un_pago(fecha: str, dni: str):
     if fecha_formateada >= datetime.today().date() and fecha_formateada <= fecha_limite_2:
         modificar_csv('fecha_de_pago', fecha, dni)
         modificar_csv('resolucion', 'Compromete fecha', dni)
-        oferta = leer_xlsx('OFERTA CANCELATORIA ', dni)
+        oferta = leer_csv('OFERTA CANCELATORIA ', dni)
         modificar_csv('monto_elegido', oferta, dni)
         modificar_csv('cant_cuotas_elegido', 1, dni)
         return True
@@ -149,13 +149,13 @@ def verificar_fecha_un_pago(fecha: str, dni: str):
 
 
 def dame_deuda(dni: str, *args):
-    return leer_xlsx('DEUDA_TOTAL', dni)
+    return leer_csv('DEUDA_TOTAL', dni)
 
 def dame_nombre(dni: str, *args):
-    return leer_xlsx('NOMBRE', dni)
+    return leer_csv('NOMBRE', dni)
 
 def dame_oferta(dni: str, *args):
-    oferta = leer_xlsx('OFERTA CANCELATORIA ', dni)
+    oferta = leer_csv('OFERTA CANCELATORIA ', dni)
     return '{0:.2f}'.format(oferta)
 
 def dame_fecha_limite(dni: str, *args):
@@ -191,12 +191,12 @@ def dame_fecha_limite_2(dni: str, *args):
     return fecha_limite.date().strftime('%d/%m/%Y')
 
 def dame_planes(dni: str, *args):
-    lista = list(leer_xlsx(['CANT  CUOTAS 1', 'MONTO CUOTA 1', 'CANT  CUOTAS 2', 'MONTO CUOTA 2', 'CANT  CUOTAS 3', 'MONTO CUOTA 3'], dni))
+    lista = list(leer_csv(['CANT  CUOTAS 1', 'MONTO CUOTA 1', 'CANT  CUOTAS 2', 'MONTO CUOTA 2', 'CANT  CUOTAS 3', 'MONTO CUOTA 3'], dni))
     lista = list(map(lambda x: int(x[1]) if x[0] % 2 == 0 else '{0:.2f}'.format(x[1]), enumerate(lista)))
     return lista
 
 def dame_oferta_fecha(dni: str, *args):
-    oferta = leer_xlsx('OFERTA CANCELATORIA ', dni)
+    oferta = leer_csv('OFERTA CANCELATORIA ', dni)
     oferta = '{0:.2f}'.format(oferta)
     fecha_limite = dame_fecha_limite(dni)
     return [oferta, fecha_limite]
@@ -221,8 +221,8 @@ def confirma_pago(mensaje: str, dni: str):
 
 def elegir_plan(mensaje: str, dni: str):
     if mensaje in ['1', '2', '3']:
-        modificar_csv('cant_cuotas_elegido', leer_xlsx('CANT  CUOTAS '+mensaje, dni), dni)
-        modificar_csv('monto_elegido', leer_xlsx('MONTO CUOTA '+mensaje, dni), dni)
+        modificar_csv('cant_cuotas_elegido', leer_csv('CANT  CUOTAS '+mensaje, dni), dni)
+        modificar_csv('monto_elegido', leer_csv('MONTO CUOTA '+mensaje, dni), dni)
         return "17"
 
 def modificar_telefono(numero_telefono, dni, campo='telefono2'):
