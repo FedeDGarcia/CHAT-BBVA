@@ -405,7 +405,7 @@ async def subir_planilla(file: UploadFile = File(...)):
 
         # Redondear valores flotantes a 2 decimales
         for col in df_final.select_dtypes(include=['float']).columns:
-            df[col] = df[col].round(2)
+            df_final[col] = df_final[col].round(2)
 
         df_final.to_csv(config['planilla_salida'], index=False)
 
