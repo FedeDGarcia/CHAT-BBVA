@@ -338,6 +338,7 @@ async def respuesta(state: ActualState):
         proximo_nodo = -1
     return {"respuesta": texto, "nodo": proximo_nodo}
 
+
 @app.post('/telefono')
 async def telefono(telefono: Telefono):
     try:
@@ -361,7 +362,9 @@ async def subir_planilla(file: UploadFile = File(...)):
             f.write(contents)
 
         # Leer el archivo Excel
-        df = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float, 'ESTADO': str, 'resolucion': str})
+        df = pd.read_excel(config['planilla_entrada'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float, 'ESTADO': str})
+        
+        # Definir las columnas necesarias
         columnas_necesarias = ['DNI', 'ESTADO', 'DEUDA_TOTAL', 'NOMBRE', 'CANT  CUOTAS 1', 
                                'MONTO CUOTA 1', 'CANT  CUOTAS 2', 'MONTO CUOTA 2', 
                                'CANT  CUOTAS 3', 'MONTO CUOTA 3', 'OFERTA CANCELATORIA ']
@@ -380,22 +383,25 @@ async def subir_planilla(file: UploadFile = File(...)):
         df = df.reindex(columns=df.columns.union(nuevas_columnas, sort=False), fill_value=None)
 
         # Leer el archivo de salida existente
-        df_original = pd.read_csv(config['planilla_salida'])
+        df_original = pd.read_csv(config['planilla_salida'], dtype={'DNI': str, 'CANT  CUOTAS 1': int, 'CANT  CUOTAS 2': int, 'CANT  CUOTAS 3': int, 'telefono': str, 'mail_nuevo': str, 'OFERTA CANCELATORIA ': float, 'ESTADO': str, 'resolucion': str})
 
-        # Identificar registros con DNI repetidos
+        # Identificar registros con DNI repetidos (comunes) y nuevos
         comunes = df_original[df_original['DNI'].isin(df['DNI'])].copy()
         nuevos = df[~df['DNI'].isin(df_original['DNI'])]
 
+        # Identificar los DNI de la planilla vieja que no están en la nueva
+        viejos = df_original[~df_original['DNI'].isin(df['DNI'])]
+
         # Actualizar registros comunes (manteniendo valores originales en 'nuevas_columnas')
         comunes_actualizados = comunes.set_index('DNI')
-        df_actualizado = df.set_index('DNI')
 
-        for col in nuevas_columnas:
-            if col in comunes_actualizados.columns:
-                comunes_actualizados[col] = comunes_actualizados[col].combine_first(df_actualizado[col])
+        # Actualizar columnas fuera de `nuevas_columnas` con los valores de `df` (planilla nueva)
+        for col in df.columns:
+            if col not in nuevas_columnas and col in comunes_actualizados.columns:
+                comunes_actualizados[col] = df.set_index('DNI')[col].combine_first(comunes_actualizados[col])
 
-        # Combinar datos actualizados y nuevos
-        df_final = pd.concat([comunes_actualizados.reset_index(), nuevos], ignore_index=True)
+        # Combinar los registros actualizados (comunes), nuevos y los registros de la planilla vieja que no están en la nueva
+        df_final = pd.concat([comunes_actualizados.reset_index(), nuevos, viejos], ignore_index=True)
 
         # Guardar el resultado final
         df_final.to_csv(config['planilla_salida'], index=False)
@@ -403,7 +409,10 @@ async def subir_planilla(file: UploadFile = File(...)):
         texto = 'OK'
     except Exception as e:
         texto = f"Error procesando el archivo: {e}"
+    
     return {'respuesta': texto}
+
+
 
 @app.get('/bajar_csv')
 async def bajar_planilla():

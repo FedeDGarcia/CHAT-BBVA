@@ -15,7 +15,7 @@ headers = {'Content-type': 'application/json'}
 
 dni_invalido = '12345678'
 dni_valido = '43527224'
-dni_con_promesa = '32998467'
+dni_con_promesa = '17534759'
 
 def verificar_valor(dni, campo, valor_esperado):
     df = pd.read_csv(config['planilla_salida'], dtype={'DNI': str})
@@ -29,7 +29,6 @@ def verificar_valor(dni, campo, valor_esperado):
 def requestAPI(payload):
     response = requests.post(url, data=json.dumps(payload), headers=headers)
     respuesta_json = json.loads(response.text)
-    print(respuesta_json)
     return respuesta_json['respuesta'].strip('"'), respuesta_json['nodo']
 
 class Nodo0(unittest.TestCase):
