@@ -403,7 +403,10 @@ async def subir_planilla(file: UploadFile = File(...)):
         # Combinar los registros actualizados (comunes), nuevos y los registros de la planilla vieja que no están en la nueva
         df_final = pd.concat([comunes_actualizados.reset_index(), nuevos, viejos], ignore_index=True)
 
-        # Guardar el resultado final
+        # Redondear valores flotantes a 2 decimales
+        for col in df_final.select_dtypes(include=['float']).columns:
+            df[col] = df[col].round(2)
+
         df_final.to_csv(config['planilla_salida'], index=False)
 
         texto = 'OK'
@@ -413,19 +416,10 @@ async def subir_planilla(file: UploadFile = File(...)):
     return {'respuesta': texto}
 
 
-
 @app.get('/bajar_csv')
 async def bajar_planilla():
-    df = pd.read_csv(config['planilla_salida'])
-    
-    df_temp = df.copy()
-    for col in df.select_dtypes(include=['float', 'int']).columns:
-        df_temp[col] = df_temp[col].round(2)
-    
-    temp_file = 'planilla.csv'
-    df.to_csv(temp_file, index=False)
-    
-    return FileResponse(temp_file)
+    return FileResponse(config['planilla_salida'])
+
 
 if __name__ == '__main__':
     uvicorn.run(app, host='localhost', port=3000)
